@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StudentService } from '../student.service';
-import { Student } from '../student';
+import { StudentService } from '../../services/student.service';
+import { Student } from '../../interfaces/student';
 import {CommonModule} from "@angular/common";
 @Component({
   selector: 'app-student',
