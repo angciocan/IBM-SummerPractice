@@ -7,11 +7,11 @@ import { Student } from '../interfaces/student';
 })
 export class StudentService {
 
-  private apiUrl = 'http://localhost:8080/student'; // Adjust the URL to match your Spring Boot endpoint
+  private apiUrl = 'http://localhost:8080/student';
 
   constructor(private http: HttpClient) { }
 
-  getStudent(): Observable<Student> {
-    return this.http.get<Student>(this.apiUrl);
+  getAllStudents(): Observable<Student[]> {
+    return this.http.get<Student[]>((`${this.apiUrl}/`));
   }
 }

@@ -1,7 +1,8 @@
-<div *ngIf="student">
+<div *ngFor="let student of students">
   <p>ID: {{ student.id }}</p>
   <p>Name: {{ student.name }}</p>
   <p>Grade: {{ student.grade }}</p>
   <p>Year: {{ student.study_year }}</p>
   <p>Department: {{ student.faculty_section }}</p>
+  <hr> <!-- Add a horizontal rule for better separation between students -->
 </div>

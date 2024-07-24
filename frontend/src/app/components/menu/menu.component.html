@@ -1,22 +1,9 @@
 <div class="container">
   <nav class="sidebar">
     <ul>
-      <li class="active"><a href="#">Student</a></li>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Elective</a></li>
+      <li [class.active]="activeLink === '/student'"><a (click)="setActive('/student')" routerLink="/student">Student</a></li>
+      <li [class.active]="activeLink === '/home'"><a (click)="setActive('/home')" routerLink="/home">Home</a></li>
+      <li [class.active]="activeLink === '/elective'"><a (click)="setActive('/elective')" routerLink="/elective">Elective</a></li>
     </ul>
   </nav>
-  <div class="content">
-    <h1>Student Page</h1>
-    <label for="student-select">Select your student:</label>
-    <select id="student-select">
-      <option>Munteanu Mircea</option>
-    </select>
-    <div class="details">
-      <p>Details</p>
-      <p>Grade 8.14</p>
-      <p>Year of study: 2</p>
-      <p>Section: Calculatoare si Tehnologia Informatiei</p>
-    </div>
-  </div>
 </div>
