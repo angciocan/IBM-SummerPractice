@@ -1,9 +1,16 @@
 <div class="container">
   <nav class="sidebar">
     <ul>
-      <li [class.active]="activeLink === '/student'"><a (click)="setActive('/student')" routerLink="/student">Student</a></li>
-      <li [class.active]="activeLink === '/home'"><a (click)="setActive('/home')" routerLink="/home">Home</a></li>
-      <li [class.active]="activeLink === '/elective'"><a (click)="setActive('/elective')" routerLink="/elective">Elective</a></li>
+      <a (click)="setActive('/student')" routerLink="/student">
+        <li [class.active]="activeLink === '/student'">Student</li>
+      </a>
+      <a (click)="setActive('/home')" routerLink="/home">
+        <li [class.active]="activeLink === '/home'">Home</li>
+      </a>
+      <a (click)="setActive('/elective')" routerLink="/elective">
+        <li [class.active]="activeLink === '/elective'">Elective</li>
+      </a>
+
     </ul>
   </nav>
 </div>

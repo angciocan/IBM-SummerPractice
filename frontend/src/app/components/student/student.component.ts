@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { StudentService } from '../../services/student.service';
+import { StudentService } from '../../services/student/student.service';
 import { Student } from '../../interfaces/student';
 import {CommonModule} from "@angular/common";
 import {RouterModule} from "@angular/router";
@@ -12,6 +12,7 @@ import {RouterModule} from "@angular/router";
 })
 export class StudentComponent implements OnInit {
   students: Student[] = [];
+
 
   constructor(private studentService: StudentService) { }
 

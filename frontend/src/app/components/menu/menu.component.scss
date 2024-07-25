@@ -2,11 +2,20 @@
   display: block;
   height: 100%;
 }
+.sidebar ul {
+  font-size: 1.4rem;
+  line-height: 1.2em;
+}
+
+.sidebar li{
+  color: #f5f5f5;
+}
 
 .container {
   display: flex;
   height: 100vh;
 }
+
 
 .sidebar {
   width: 200px;
@@ -15,33 +24,53 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 0;
+
 }
+
 
 .sidebar ul {
   list-style-type: none; /* Remove default list styling */
-  padding: 0;
-  margin: 0;
   width: 100%;
+  text-align: center;
+  padding: 2.5rem 0;
+}
+
+
+.sidebar li {
+  padding: 0 -2rem;
+  margin: 1rem 0;
+  margin-bottom: -1rem;
 }
 
 .sidebar ul li {
   padding: 15px 20px; /* Padding for the list items */
   width: 100%;
+
 }
 
-.sidebar ul li.active {
+.sidebar li.active {
   background-color: #001a7a;
+
 }
+
+
+.sidebar li:hover {
+  background-color: #001a7a;
+  transition: 0.6s ease-in-out;
+}
+.sidebar li {
+  margin-bottom: 1rem;
+}
+
 
 .sidebar ul li a {
   color: white;
-  text-decoration: none;
+
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.sidebar ul li a:hover {
-  text-decoration: underline;
+a{
+  text-underline: none;
 }
