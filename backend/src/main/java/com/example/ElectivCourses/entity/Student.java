@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "students")
 public class Student {
@@ -27,6 +29,9 @@ public class Student {
 
     @Column
     private boolean is_admin;
+
+    @OneToMany(mappedBy = "student")
+    private Set<Enrollment> enrollments;
 
     public Student(String name, String faculty_section, int study_year, int grade, boolean is_admin) {
         this.name = name;

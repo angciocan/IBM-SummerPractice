@@ -7,6 +7,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -34,6 +35,13 @@ public class Course {
 
     @Column
     private LocalTime time;
+
+    @OneToMany(mappedBy = "course")
+    private Set<Enrollment> enrollments;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     public Course(String course_name, int max_students, int year_of_study, String category, DayOfWeek day_of_week, LocalTime time) {
         this.course_name = course_name;
