@@ -5,7 +5,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@Table(name = "administrators")
+@Table(name = "administrator")
 public class Administrator {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

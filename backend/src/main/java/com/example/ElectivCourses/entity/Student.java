@@ -7,7 +7,7 @@ import org.hibernate.type.SqlTypes;
 import java.util.Set;
 
 @Entity
-@Table(name = "students")
+@Table(name = "student")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
