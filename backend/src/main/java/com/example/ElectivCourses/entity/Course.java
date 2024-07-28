@@ -36,9 +36,10 @@ public class Course {
     @Column
     private LocalTime time;
 
-    @OneToMany(mappedBy = "course")
-    private Set<Enrollment> enrollments;
-
+//    @OneToMany(mappedBy = "course")
+//    private Set<Enrollment> enrollments;
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students;
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;

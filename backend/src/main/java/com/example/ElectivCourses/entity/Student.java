@@ -1,6 +1,7 @@
 package com.example.ElectivCourses.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -15,6 +16,7 @@ public class Student {
     @JdbcTypeCode(SqlTypes.BIGINT)
     private Long id;
 
+    @Getter
     @Column
     private String name;
 
@@ -30,8 +32,14 @@ public class Student {
     @Column
     private boolean is_admin;
 
-    @OneToMany(mappedBy = "student")
-    private Set<Enrollment> enrollments;
+    @ManyToMany
+    @JoinTable(
+            name = "enrollment",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private Set<Course> courses;
+
 
     public Student(String name, String faculty_section, int study_year, int grade, boolean is_admin) {
         this.name = name;
@@ -45,10 +53,6 @@ public class Student {
 
     public Long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {

@@ -1,10 +1,19 @@
-insert into student(id, name, grade, is_admin, study_year, faculty_section) values (11, 'Robert', 10, true, 4, 'CTI');
-insert into student(id, name, grade, is_admin, study_year, faculty_section) values (23, 'Angelo', 7, false, 3, 'CTI');
-insert into student(id, name, grade, is_admin, study_year, faculty_section) values (47, 'Mircea', 8, true, 2, 'CTI-EN');
+-- Insert students
+INSERT INTO student(id, name, grade, is_admin, study_year, faculty_section) VALUES (11, 'Robert', 10, true, 4, 'CTI');
+INSERT INTO student(id, name, grade, is_admin, study_year, faculty_section) VALUES (23, 'Angelo', 7, false, 3, 'CTI');
+INSERT INTO student(id, name, grade, is_admin, study_year, faculty_section) VALUES (47, 'Mircea', 8, true, 2, 'CTI-EN');
 
---
-insert into teacher(id,is_admin,name) values (4,true,'Nicolina');
---
-insert into administrator(id,name) values (6,'BOSS');
+-- Insert teachers
+INSERT INTO teacher(id, name, is_admin) VALUES (4, 'Nicolina', false);
 
-insert into course(id, course_name, day_of_week, max_students, time, year_of_study, category) values (101, 'fizica', 2, 99, '15:00', 1, 'hardware');
+-- Insert administrators (assuming administrator is a separate entity, otherwise modify as needed)
+INSERT INTO administrator(id, name) VALUES (6, 'BOSS');
+
+-- Insert courses
+INSERT INTO course(id, course_name, day_of_week, max_students, time, year_of_study, category, teacher_id) VALUES (101, 'fizica', 2, 99, '15:00', 1, 'hardware', 4);
+
+-- Insert enrollments
+INSERT INTO enrollment(id, student_id, course_id) VALUES (1, 11, 101);
+INSERT INTO enrollment(id, student_id, course_id) VALUES (2, 23, 101);
+INSERT INTO enrollment(id, student_id, course_id) VALUES (3, 47, 101);
+
