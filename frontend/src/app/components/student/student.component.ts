@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { StudentService } from '../../services/student/student.service';
+import {StudentService} from "../../services/student.service";
 import { Student } from '../../interfaces/student';
 import {CommonModule} from "@angular/common";
 import {RouterModule} from "@angular/router";
+
 @Component({
   selector: 'app-student',
   standalone: true,

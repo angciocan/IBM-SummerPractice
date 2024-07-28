@@ -1,10 +1,7 @@
-import {UserRole} from "./userRole";
+import {User} from "./user";
 
-export interface Student {
-  id:number;
-  name:string;
+export interface Student extends User {
   grade:number;
   study_year:number;
   faculty_section:string;
-
 }

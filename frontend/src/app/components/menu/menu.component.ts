@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-menu',
@@ -15,12 +16,6 @@ export class MenuComponent {
 
   constructor(private router: Router) {
     this.activeLink = this.router.url;
-  }
-
-  navigate(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const url = selectElement.value;
-    this.setActive(url);
   }
 
   setActive(link: string): void {
