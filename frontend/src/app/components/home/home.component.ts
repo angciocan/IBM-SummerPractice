@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {User} from "../../interfaces/user";
 import {SelectedUserService} from "../../services/selected-user.service";
 import {CommonModule} from "@angular/common";
-import {ReplaceNullWithTextPipe} from "../../replace-null-with-text.pipe";
+import {ReplaceNullWithTextPipe} from "../../pipes/replace-null-with-text.pipe";
 
 @Component({
   selector: 'app-home',

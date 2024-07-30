@@ -6,6 +6,8 @@ import {Admin} from "../../interfaces/admin";
 import {StudentService} from "../../services/student.service";
 import {SelectedUserService} from "../../services/selected-user.service";
 import {CommonModule} from "@angular/common";
+import {TeacherService} from "../../services/teacher.service";
+import {AdministratorService} from "../../services/administrator.service";
 
 @Component({
   selector: 'app-user',
@@ -19,16 +21,21 @@ export class UserComponent {
   teachers: Teacher[] = [];
   admins: Admin[] = [];
 
-  constructor(private userService: StudentService, private selectedUserService: SelectedUserService) {}
+  constructor(
+    private studentService: StudentService,
+    private teacherService: TeacherService,
+    private administratorService: AdministratorService,
+    private selectedUserService: SelectedUserService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
   loadUsers(): void {
-    this.userService.getAllStudents().subscribe(data => this.students = data);
-    // this.userService.getTeachers().subscribe(data => this.teachers = data);
-    // this.userService.getAdmins().subscribe(data => this.admins = data);
+    this.studentService.getAllStudents().subscribe(data => this.students = data);
+    this.teacherService.getAllTeachers().subscribe(data => this.teachers = data);
+    this.administratorService.getAllAdministrators().subscribe(data => this.admins = data);
   }
 
   selectUser(user: User): void {
