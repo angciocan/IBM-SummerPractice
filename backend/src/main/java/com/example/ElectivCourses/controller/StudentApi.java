@@ -1,6 +1,7 @@
 package com.example.ElectivCourses.controller;
 
-import com.example.ElectivCourses.entity.Student;
+import com.example.ElectivCourses.Model.dto.StudentDTO;
+import com.example.ElectivCourses.Model.entity.Student;
 import com.example.ElectivCourses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/students")
 @CrossOrigin(origins = "http://localhost:4200")
 public class StudentApi {
 
@@ -17,7 +18,7 @@ public class StudentApi {
 
     @GetMapping("/")
     @ResponseBody
-    public List<Student> getAllStudents() {
+    public List<StudentDTO> getAllStudents() {
         return  studentService.getAllStudents();
     }
 

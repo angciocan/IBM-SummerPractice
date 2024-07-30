@@ -1,6 +1,6 @@
 package com.example.ElectivCourses.service;
 
-import com.example.ElectivCourses.entity.Teacher;
+import com.example.ElectivCourses.Model.entity.Teacher;
 
 
 import java.util.List;

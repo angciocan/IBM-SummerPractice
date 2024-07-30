@@ -1,6 +1,6 @@
 package com.example.ElectivCourses.controller;
 
-import com.example.ElectivCourses.entity.Teacher;
+import com.example.ElectivCourses.Model.entity.Teacher;
 import com.example.ElectivCourses.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
