@@ -8,7 +8,7 @@ import com.example.ElectivCourses.service.AdministratorService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/administrators")
+@RequestMapping("/administrator")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AdministratorApi {
     @Autowired

@@ -40,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findByMaxStudents(maxStudents).stream().map(course -> CourseConverter.toDTO(course)).collect(Collectors.toList());
     }
 
+    @Override
     public List<CourseDTO> getCoursesByCategory(String category) {
         return courseRepository.findByCategory(category).stream().map(course -> CourseConverter.toDTO(course)).collect(Collectors.toList());
     }
@@ -52,4 +53,5 @@ public class CourseServiceImpl implements CourseService {
                 .filter(enrollment -> enrollment.getStudent() == studentService.getStudentById(studentId))
                 .map(Enrollment::getCourse).map(CourseConverter::toDTO).collect(Collectors.toList());
     }
+    
 }

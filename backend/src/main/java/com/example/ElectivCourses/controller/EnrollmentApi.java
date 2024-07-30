@@ -11,7 +11,7 @@ import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
 import java.util.List;
 
 @RestController
-@RequestMapping("/enrollments")
+@RequestMapping("/enrollment")
 @CrossOrigin(origins = "http://localhost:4200")
 public class EnrollmentApi {
     @Autowired
