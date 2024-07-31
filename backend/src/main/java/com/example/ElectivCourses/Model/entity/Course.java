@@ -15,7 +15,6 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-//    @JdbcTypeCode(SqlTypes.BIGINT)
     private Long id;
 
     @Column

@@ -13,15 +13,12 @@ public class StudentDTO {
 
     private int grade;
 
-    private boolean admin;
-
-    public StudentDTO(Long id, String name, String facultySection, int grade, int studyYear, boolean admin) {
+    public StudentDTO(Long id, String name, String facultySection, int grade, int studyYear) {
         this.id = id;
         this.name = name;
         this.facultySection = facultySection;
         this.grade = grade;
         this.studyYear = studyYear;
-        this.admin = admin;
     }
 
     public StudentDTO() {}
@@ -64,13 +61,5 @@ public class StudentDTO {
 
     public void setGrade(int grade) {
         this.grade = grade;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
     }
 }

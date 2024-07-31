@@ -1,8 +1,11 @@
 package com.example.ElectivCourses.service.impl;
 
 import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
+import com.example.ElectivCourses.Model.dto.StudentDTO;
 import com.example.ElectivCourses.Model.entity.Enrollment;
+import com.example.ElectivCourses.Model.entity.EnrollmentStatus;
 import com.example.ElectivCourses.converter.EnrollmentConverter;
+import com.example.ElectivCourses.converter.StudentConverter;
 import com.example.ElectivCourses.repository.EnrollmentRepository;
 import com.example.ElectivCourses.service.EnrollmentService;
 import jakarta.transaction.Transactional;
@@ -39,7 +42,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 //        newEnrollment.setId(Long.parseLong(timestamp + String.format("%04d", randomNumber)));
 
         enrollmentRepository.save(newEnrollment);
-        System.out.println(newEnrollment.getId());
         return EnrollmentConverter.toDTO(newEnrollment);
 //        return EnrollmentConverter.toDTO(enrollmentRepository.save(enrollmentConverter.toEntity(enrollmentDTO)));
     }
@@ -63,5 +65,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 //        existentEnrollment.ifPresent(enrollment -> enrollmentRepository.delete(enrollment));
 
+    }
+
+    @Override
+    public long getNrOfCurrentApplications(Long courseId) {
+        return enrollmentRepository.findAll().stream()
+                .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.PENDING).count();
+    }
+
+    @Override
+    public List<StudentDTO> getStudentsEnrolledToCourse(Long courseId) {
+        return enrollmentRepository.findAll().stream()
+                .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.ENROLLED)
+                .map(enrollment -> StudentConverter.toDTO(enrollment.getStudent())).collect(Collectors.toList());
     }
 }

@@ -6,12 +6,9 @@ public class TeacherDTO {
 
     private String name;
 
-    private boolean is_admin;
-
-    public TeacherDTO(Long id, String name, boolean is_admin) {
+    public TeacherDTO(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.is_admin = is_admin;
     }
 
     public TeacherDTO() {}
@@ -30,13 +27,5 @@ public class TeacherDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isIs_admin() {
-        return is_admin;
-    }
-
-    public void setIs_admin(boolean is_admin) {
-        this.is_admin = is_admin;
     }
 }

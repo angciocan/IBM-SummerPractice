@@ -14,7 +14,6 @@ public class TeacherConverter {
         TeacherDTO teacherDTO = new TeacherDTO();
         teacherDTO.setId(teacher.getId());
         teacherDTO.setName(teacher.getName());
-        teacherDTO.setIs_admin(teacher.isAdmin());
 
         return teacherDTO;
     }

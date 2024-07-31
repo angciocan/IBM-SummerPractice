@@ -18,7 +18,6 @@ public class StudentConverter {
         studentDTO.setFacultySection(student.getFacultySection());
         studentDTO.setStudyYear(student.getStudyYear());
         studentDTO.setGrade(student.getGrade());
-        studentDTO.setAdmin(student.isAdmin());
 
         return studentDTO;
     }

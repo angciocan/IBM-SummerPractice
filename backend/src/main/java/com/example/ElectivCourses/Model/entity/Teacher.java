@@ -12,20 +12,16 @@ public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    @JdbcTypeCode(SqlTypes.BIGINT)
     private Long id;
 
     @Column
     private String name;
 
-    @Column
-    private boolean admin;
 
     @OneToMany(mappedBy = "teacher")
     private List<Course> courses;
 
-    public Teacher(boolean admin, String name) {
-        this.admin = admin;
+    public Teacher(String name) {
         this.name = name;
     }
 
@@ -41,14 +37,6 @@ public class Teacher {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
     }
 
     public void setId(Long id) {

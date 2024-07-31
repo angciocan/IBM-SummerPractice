@@ -20,12 +20,6 @@ public class Enrollment {
     @JoinColumn(name = "course_id")
     private Course course;
 
-//    move somewhere else, coding convention
-    @Transient
-    private static LocalDate start_time;
-
-    @Transient
-    private static LocalDate end_time;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -72,19 +66,19 @@ public class Enrollment {
         this.course = course;
     }
 
-    public static LocalDate getStart_time() {
-        return start_time;
-    }
-
-    public static void setStart_time(LocalDate start_time) {
-        Enrollment.start_time = start_time;
-    }
-
-    public static LocalDate getEnd_time() {
-        return end_time;
-    }
-
-    public static void setEnd_time(LocalDate end_time) {
-        Enrollment.end_time = end_time;
-    }
+//    public static LocalDate getStart_time() {
+//        return start_time;
+//    }
+//
+//    public static void setStart_time(LocalDate start_time) {
+//        Enrollment.start_time = start_time;
+//    }
+//
+//    public static LocalDate getEnd_time() {
+//        return end_time;
+//    }
+//
+//    public static void setEnd_time(LocalDate end_time) {
+//        Enrollment.end_time = end_time;
+//    }
 }

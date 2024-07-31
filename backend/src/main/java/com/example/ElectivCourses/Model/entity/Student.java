@@ -12,7 +12,6 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-//    @JdbcTypeCode(SqlTypes.BIGINT)
     private Long id;
 
     @Column
@@ -27,26 +26,14 @@ public class Student {
     @Column
     private int grade;
 
-    @Column
-    private boolean admin;
-
     @OneToMany(mappedBy = "student")
     private Set<Enrollment> enrollments;
 
-    public Student(String name, String facultySection, int studyYear, int grade, boolean admin) {
+    public Student(String name, String facultySection, int studyYear, int grade) {
         this.name = name;
         this.facultySection = facultySection;
         this.studyYear = studyYear;
         this.grade = grade;
-        this.admin = admin;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
     }
 
     public Set<Enrollment> getEnrollments() {
