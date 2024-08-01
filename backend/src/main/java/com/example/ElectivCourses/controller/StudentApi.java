@@ -16,7 +16,7 @@ public class StudentApi {
     @Autowired
     private StudentService studentService;
 
-    @GetMapping("/")
+    @GetMapping("/getStudent")
     @ResponseBody
     public List<StudentDTO> getAllStudents() {
         return  studentService.getAllStudents();

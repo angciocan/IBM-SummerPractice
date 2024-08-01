@@ -53,5 +53,23 @@ public class CourseServiceImpl implements CourseService {
                 .filter(enrollment -> enrollment.getStudent() == studentService.getStudentById(studentId))
                 .map(Enrollment::getCourse).map(CourseConverter::toDTO).collect(Collectors.toList());
     }
+
+    @Override
+    public CourseDTO createCourse(Course courseToCreate){
+        return CourseConverter.toDTO(courseRepository.save(courseToCreate));
+    }
+
+    @Override
+    public CourseDTO updateCourse(Long id, Course courseToUpdate){
+        return CourseConverter.toDTO(courseRepository.findById(id).map(course -> {course.setCourseName(courseToUpdate.getCourseName());
+            course.setCategory(courseToUpdate.getCategory()); course.setDayOfWeek(courseToUpdate.getDayOfWeek());
+            course.setTime(courseToUpdate.getTime()); return courseRepository.save(course);}).orElseThrow(() ->
+                new RuntimeException("Cursul nu se poate actualiza")));
+    }
+
+    @Override
+    public void deleteCourse(Long id){
+        courseRepository.deleteById(id);
+    }
     
 }
