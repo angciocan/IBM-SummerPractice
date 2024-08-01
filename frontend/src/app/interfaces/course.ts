@@ -1,9 +1,13 @@
+import {Teacher} from "./teacher";
 
 export interface Course {
   id: number;
-  course_name: string;
-  year_of_study: number;
+  courseName: string;
+  maxStudents: number;
+  studyYear: number;
   category: string;
-  description: string;
-
+  dayOfWeek: string;
+  time: string;
+  teacher: Teacher;
 }
+

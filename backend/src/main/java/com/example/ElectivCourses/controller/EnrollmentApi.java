@@ -1,5 +1,6 @@
 package com.example.ElectivCourses.controller;
 
+import com.example.ElectivCourses.Model.dto.CourseDTO;
 import com.example.ElectivCourses.Model.dto.StudentDTO;
 import com.example.ElectivCourses.Model.entity.Enrollment;
 import com.example.ElectivCourses.service.EnrollmentService;
@@ -45,4 +46,11 @@ public class EnrollmentApi {
         List<StudentDTO> students = enrollmentService.getStudentsEnrolledToCourse(courseId);
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
+    @GetMapping("courses-of-the-student/{studentId}")
+    public ResponseEntity<List<CourseDTO>> getCoursesForStudent(@PathVariable Long studentId) {
+        List<CourseDTO> courses = enrollmentService.getCoursesForStudent(studentId);
+        return ResponseEntity.ok(courses);
+    }
+
+
 }

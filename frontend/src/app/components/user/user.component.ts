@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {User} from "../../interfaces/user";
 import {Student} from "../../interfaces/student";
 import {Teacher} from "../../interfaces/teacher";
@@ -8,6 +8,7 @@ import {SelectedUserService} from "../../services/selected-user.service";
 import {CommonModule} from "@angular/common";
 import {TeacherService} from "../../services/teacher.service";
 import {AdministratorService} from "../../services/administrator.service";
+import {Course} from "../../interfaces/course";
 
 @Component({
   selector: 'app-user',
@@ -16,10 +17,11 @@ import {AdministratorService} from "../../services/administrator.service";
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
 })
-export class UserComponent {
+export class UserComponent implements OnInit{
   students: Student[] = [];
   teachers: Teacher[] = [];
   admins: Admin[] = [];
+  courses: Course[] = [];
 
   constructor(
     private studentService: StudentService,
@@ -40,10 +42,29 @@ export class UserComponent {
 
   selectUser(user: User): void {
     this.selectedUserService.setSelectedUser(user);
+    if ((user as Student).role === 'student') {
+      this.loadCoursesForStudent(user.id);
+      console.log(user.id)
+    }
+    else{
+      this.courses=[];
+    }
+  }
+
+  clearSelectedUser(): void {
+    this.selectedUserService.clearSelectedUser();
+    this.courses = [];
   }
 
   getSelectedUser(): User | null {
     return this.selectedUserService.getSelectedUser();
+  }
+
+  private loadCoursesForStudent(studentId: number): void {
+    this.studentService.getCoursesForStudent(studentId).subscribe(courses => {
+      this.courses = courses;
+      console.log(this.courses)
+    });
   }
 
 }

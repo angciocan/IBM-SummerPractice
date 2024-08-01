@@ -16,8 +16,9 @@ insert into enrollment_administration(nr_of_courses, study_year) values (4, 4);
 
 insert into enrollment(course_id,id,student_id,status) values (101,1,11,'ENROLLED');
 insert into enrollment(course_id,id,student_id,status) values (345,2,47,'ENROLLED');
-insert into enrollment(course_id,id,student_id,status) values (101,3,23,'ENROLLED');
-insert into enrollment(course_id,id,student_id,status) values (101,4,47,'ENROLLED');
+-- insert into enrollment(course_id,id,student_id,status) values (101,3,23,'ENROLLED');
+-- insert into enrollment(course_id,id,student_id,status) values (101,4,47,'ENROLLED');
+insert into enrollment(course_id,id,student_id,status) values (345,5,11,'ENROLLED');
 
 
 -- insert into students(id) values (10);

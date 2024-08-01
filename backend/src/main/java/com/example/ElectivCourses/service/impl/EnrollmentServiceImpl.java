@@ -1,7 +1,9 @@
 package com.example.ElectivCourses.service.impl;
 
+import com.example.ElectivCourses.Model.dto.CourseDTO;
 import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
 import com.example.ElectivCourses.Model.dto.StudentDTO;
+import com.example.ElectivCourses.Model.dto.TeacherDTO;
 import com.example.ElectivCourses.Model.entity.Enrollment;
 import com.example.ElectivCourses.Model.entity.EnrollmentStatus;
 import com.example.ElectivCourses.converter.EnrollmentConverter;
@@ -78,5 +80,27 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return enrollmentRepository.findAll().stream()
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.ENROLLED)
                 .map(enrollment -> StudentConverter.toDTO(enrollment.getStudent())).collect(Collectors.toList());
+    }
+    @Override
+    public List<CourseDTO> getCoursesForStudent(Long studentId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId);
+        return enrollments.stream()
+                .map(enrollment -> {
+                    TeacherDTO teacherDTO = new TeacherDTO(
+                            enrollment.getCourse().getTeacher().getId(),
+                            enrollment.getCourse().getTeacher().getName()
+                    );
+                    return new CourseDTO(
+                            enrollment.getCourse().getCourseName(),
+                            enrollment.getCourse().getMaxStudents(),
+                            enrollment.getCourse().getStudyYear(),
+                            enrollment.getCourse().getCategory(),
+                            enrollment.getCourse().getDayOfWeek(),
+                            enrollment.getCourse().getTime(),
+                            teacherDTO,
+                            enrollment.getCourse().getId()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }

@@ -2,5 +2,12 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Elective_Dummy" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Elective_Original" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Immobille-IC" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../LABS2024-Live" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../PersonalFinance" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../RealEstateBackendSpring" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../backend_immobille_spring" vcs="Git" />
   </component>
 </project>
