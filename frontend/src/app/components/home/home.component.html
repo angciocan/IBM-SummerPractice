@@ -1,4 +1,19 @@
 <div *ngIf="selectedUser">
   <h3>Currently Selected User</h3>
   <p>Name: {{ selectedUser.name | replaceNullWithText: "No student chosen" }}</p>
+  <p *ngIf="isStudent(selectedUser)">Year of study: {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }}</p>
+  <div *ngIf="selectedUser.role === 'student'">
+    <h4>Enrolled Courses:</h4>
+    <ul>
+      <li *ngFor="let course of courses">
+        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
+      </li>
+    </ul>
+  </div>
+  <h3>Elective courses:</h3>
+  <div cdkDropListGroup>
+    <ul cdkDropList (cdkDropListDropped)="drop($event)">
+      <li *ngFor="let course of electiveCourses" cdkDrag>{{ course }}</li>
+    </ul>
+  </div>
 </div>

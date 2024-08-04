@@ -22,6 +22,7 @@ export class UserComponent implements OnInit{
   teachers: Teacher[] = [];
   admins: Admin[] = [];
   courses: Course[] = [];
+  user: User | null = null;
 
   constructor(
     private studentService: StudentService,
@@ -32,6 +33,10 @@ export class UserComponent implements OnInit{
 
   ngOnInit(): void {
     this.loadUsers();
+    this.user = this.selectedUserService.getSelectedUser()
+    if (this.user) {
+      this.loadCoursesForStudent(this.user.id);
+    }
   }
 
   loadUsers(): void {
@@ -44,7 +49,7 @@ export class UserComponent implements OnInit{
     this.selectedUserService.setSelectedUser(user);
     if ((user as Student).role === 'student') {
       this.loadCoursesForStudent(user.id);
-      console.log(user.id)
+      console.log(user)
     }
     else{
       this.courses=[];
