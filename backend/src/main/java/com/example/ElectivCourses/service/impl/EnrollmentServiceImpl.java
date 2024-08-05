@@ -30,22 +30,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public EnrollmentDTO createEnrollment(EnrollmentDTO enrollmentDTO) {
-        Enrollment newEnrollment =  enrollmentConverter.toEntity(enrollmentDTO);
+        Enrollment newEnrollment = enrollmentConverter.toEntity(enrollmentDTO);
+        newEnrollment.setStatus(EnrollmentStatus.PENDING);
+
+        Enrollment finalNewEnrollment = newEnrollment;
         Optional<Enrollment> alreadyExists = enrollmentRepository.findAll().stream()
-                .filter(enrollment -> (enrollment.getStudent() == newEnrollment.getStudent() && enrollment.getCourse() == newEnrollment.getCourse())).findAny();
+                .filter(enrollment ->
+                        enrollment.getStudent().getId().equals(finalNewEnrollment.getStudent().getId()) &&
+                                enrollment.getCourse().getId().equals(finalNewEnrollment.getCourse().getId())
+                ).findAny();
 
         if (alreadyExists.isPresent()) {
             return EnrollmentConverter.toDTO(alreadyExists.get());
         }
 
-//        long timestamp = System.currentTimeMillis();
-//        int randomNumber = new Random().nextInt(999999); // Six-digit random number
-//
-//        newEnrollment.setId(Long.parseLong(timestamp + String.format("%04d", randomNumber)));
-
-        enrollmentRepository.save(newEnrollment);
+        newEnrollment = enrollmentRepository.save(newEnrollment);
         return EnrollmentConverter.toDTO(newEnrollment);
-//        return EnrollmentConverter.toDTO(enrollmentRepository.save(enrollmentConverter.toEntity(enrollmentDTO)));
     }
 
     @Override

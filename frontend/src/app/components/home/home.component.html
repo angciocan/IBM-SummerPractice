@@ -2,6 +2,7 @@
   <h3>Currently Selected User</h3>
   <p>Name: {{ selectedUser.name | replaceNullWithText: "No student chosen" }}</p>
   <p *ngIf="isStudent(selectedUser)">Year of study: {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }}</p>
+  <p *ngIf="isStudent(selectedUser)">You need to pick {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }} courses</p>
   <div *ngIf="selectedUser.role === 'student'">
     <h4>Enrolled Courses:</h4>
     <ul>
@@ -9,6 +10,7 @@
         {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
       </li>
     </ul>
+
   </div>
   <div *ngIf="selectedUser.role === 'teacher'">
     <h4>Teaching Courses:</h4>

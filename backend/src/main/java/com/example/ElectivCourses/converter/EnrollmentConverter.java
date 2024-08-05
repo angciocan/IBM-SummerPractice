@@ -7,8 +7,6 @@ import com.example.ElectivCourses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Random;
-import java.util.UUID;
 
 
 @Component
@@ -25,8 +23,10 @@ public class EnrollmentConverter {
         }
 
         EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
+        enrollmentDTO.setId(enrollment.getId());
         enrollmentDTO.setStudentId(enrollment.getStudent() != null ? enrollment.getStudent().getId() : null);
         enrollmentDTO.setCourseId(enrollment.getCourse() != null ? enrollment.getCourse().getId() : null);
+        enrollmentDTO.setStatus(enrollment.getStatus() != null ? enrollment.getStatus() : null);
 
         return enrollmentDTO;
     }

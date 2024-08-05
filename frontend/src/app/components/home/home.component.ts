@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.selectedUserService.selectedUser$.subscribe(user => {
       this.selectedUser = user;
-      // console.log(this.selectedUser);
+      console.log(user)
       if (this.selectedUser && ((this.selectedUser as Student).role === 'student')) {
         this.loadCoursesForStudent(this.selectedUser.id);
       }
