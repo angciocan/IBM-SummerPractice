@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class EnrollmentAdministration {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int studyYear;
 

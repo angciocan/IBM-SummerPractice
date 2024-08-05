@@ -8,7 +8,7 @@ import org.hibernate.type.SqlTypes;
 @Table(name = "administrator")
 public class Administrator {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
