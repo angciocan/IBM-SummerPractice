@@ -35,7 +35,8 @@ export class UserComponent implements OnInit{
     this.loadUsers();
     this.user = this.selectedUserService.getSelectedUser()
     if (this.user) {
-      this.loadCoursesForStudent(this.user.id);
+      this.loadUserCourses(this.user);
+      console.log(this.user)
     }
   }
 
@@ -47,13 +48,7 @@ export class UserComponent implements OnInit{
 
   selectUser(user: User): void {
     this.selectedUserService.setSelectedUser(user);
-    if ((user as Student).role === 'student') {
-      this.loadCoursesForStudent(user.id);
-      console.log(user)
-    }
-    else{
-      this.courses=[];
-    }
+    this.loadUserCourses(user);
   }
 
   clearSelectedUser(): void {
@@ -63,6 +58,16 @@ export class UserComponent implements OnInit{
 
   getSelectedUser(): User | null {
     return this.selectedUserService.getSelectedUser();
+  }
+
+  private loadUserCourses(user: User): void {
+    if (user.role === 'student') {
+      this.loadCoursesForStudent(user.id);
+    } else if (user.role === 'teacher') {
+      this.courses = (user as Teacher).courses;
+      console.log(this.courses)
+    } else {
+    }
   }
 
   private loadCoursesForStudent(studentId: number): void {

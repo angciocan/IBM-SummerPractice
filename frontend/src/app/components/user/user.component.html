@@ -29,6 +29,14 @@
         </li>
       </ul>
     </div>
+    <div *ngIf="selectedUser.role === 'teacher'">
+      <h4>Teaching Courses:</h4>
+      <ul>
+        <li *ngFor="let course of courses">
+          {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
+        </li>
+      </ul>
+    </div>
   </div>
 
 </div>

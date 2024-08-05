@@ -7,6 +7,7 @@ import {StudentService} from "../../services/student.service";
 import {Course} from "../../interfaces/course";
 import {Student} from "../../interfaces/student";
 import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
+import {Teacher} from "../../interfaces/teacher";
 
 @Component({
   selector: 'app-home',
@@ -34,9 +35,13 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.selectedUserService.selectedUser$.subscribe(user => {
       this.selectedUser = user;
-      console.log(this.selectedUser);
-      if (this.selectedUser && (this.selectedUser as Student).role === 'student') {
+      // console.log(this.selectedUser);
+      if (this.selectedUser && ((this.selectedUser as Student).role === 'student')) {
         this.loadCoursesForStudent(this.selectedUser.id);
+      }
+      if (this.selectedUser && ((this.selectedUser as Teacher).role === 'teacher')) {
+        this.courses = (this.selectedUser as Teacher).courses
+        console.log(this.courses)
       }
     });
     this.cdr.detectChanges();

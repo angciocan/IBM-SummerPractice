@@ -6,7 +6,7 @@ import {UserComponent} from "./components/user/user.component";
 export const routeConfig: Routes = [
   {
     path: '',
-    component: HomeComponent,
+    component: UserComponent,
     title: 'Home page'
   },
   {

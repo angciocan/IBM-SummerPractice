@@ -10,10 +10,12 @@
       </li>
     </ul>
   </div>
-  <h3>Elective courses:</h3>
-  <div cdkDropListGroup>
-    <ul cdkDropList (cdkDropListDropped)="drop($event)">
-      <li *ngFor="let course of electiveCourses" cdkDrag>{{ course }}</li>
+  <div *ngIf="selectedUser.role === 'teacher'">
+    <h4>Teaching Courses:</h4>
+    <ul>
+      <li *ngFor="let course of courses">
+        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
+      </li>
     </ul>
   </div>
 </div>
