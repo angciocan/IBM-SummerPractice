@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,7 +29,7 @@ public class Student {
     private int grade;
 
     @OneToMany(mappedBy = "student")
-    private Set<Enrollment> enrollments;
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     public Student(String name, String facultySection, int studyYear, int grade) {
         this.name = name;
@@ -36,11 +38,11 @@ public class Student {
         this.grade = grade;
     }
 
-    public Set<Enrollment> getEnrollments() {
+    public List<Enrollment> getEnrollments() {
         return enrollments;
     }
 
-    public void setEnrollments(Set<Enrollment> enrollments) {
+    public void setEnrollments(List<Enrollment> enrollments) {
         this.enrollments = enrollments;
     }
 
