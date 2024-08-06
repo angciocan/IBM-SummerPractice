@@ -4,18 +4,6 @@
   <p *ngIf="isStudent(selectedUser)">Year of study: {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }}</p>
   <p *ngIf="isStudent(selectedUser)">You need to pick {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }} courses</p>
   <div *ngIf="selectedUser.role === 'student'">
-<!--    <h4>Enrolled Courses:</h4>-->
-<!--    <ul>-->
-<!--      <li *ngFor="let course of courses">-->
-<!--        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--    <h4>Same year courses:</h4>-->
-<!--    <ul>-->
-<!--      <li *ngFor="let course of studyYearCourses">-->
-<!--        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}-->
-<!--      </li>-->
-<!--    </ul>-->
     <h4>Mandatory Courses</h4>
     <ul>
       <li *ngFor="let course of mandatoryCourses">

@@ -1,1 +1,6 @@
-<p>elective works!</p>
+<h4>Elective Courses</h4>
+<ul cdkDropList (cdkDropListDropped)="drop($event)">
+  <li *ngFor="let course of electiveCourses" cdkDrag>
+    {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }}
+  </li>
+</ul>
