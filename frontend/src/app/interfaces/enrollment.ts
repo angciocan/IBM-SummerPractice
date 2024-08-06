@@ -1,6 +1,6 @@
 import {EnrollmentStatus} from "../enums/enrollment-status";
 
-interface Enrollment {
+export interface Enrollment {
   id: number;
   studentId: number;
   courseId: number;

@@ -18,7 +18,7 @@ insert into enrollment_administration(nr_of_mandatory_courses,nr_of_elective_cou
 insert into enrollment_administration(nr_of_mandatory_courses,nr_of_elective_courses, study_year) values (2,4, 4);
 --
 insert into enrollment(course_id,student_id,status) values (1,2,'PENDING');
-insert into enrollment(course_id,student_id,status) values (1,3,'PENDING');
+insert into enrollment(course_id,student_id,status) values (1,3,'ENROLLED');
 insert into enrollment(course_id,student_id,status) values (2,1,'PENDING');
 insert into enrollment(course_id,student_id,status) values (2,2,'PENDING');
 insert into enrollment(course_id,student_id,status) values (3,1,'PENDING');

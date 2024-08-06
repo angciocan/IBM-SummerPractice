@@ -23,12 +23,6 @@ public class EnrollmentAdministration {
     @Column
     private int nrOfElectiveCourses;
 
-    public EnrollmentAdministration(int studyYear, int nrOfMandatoryCourses, int nrOfElectiveCourses) {
-        this.studyYear = studyYear;
-        this.nrOfMandatoryCourses = nrOfMandatoryCourses;
-        this.nrOfElectiveCourses = nrOfElectiveCourses;
-    }
-
     @Transient
     private static LocalDate startTime;
 
@@ -36,6 +30,14 @@ public class EnrollmentAdministration {
     private static LocalDate endTime;
 
     public EnrollmentAdministration() {}
+
+    public EnrollmentAdministration(int studyYear, int nrOfMandatoryCourses, int nrOfElectiveCourses) {
+        this.studyYear = studyYear;
+        this.nrOfMandatoryCourses = nrOfMandatoryCourses;
+        this.nrOfElectiveCourses = nrOfElectiveCourses;
+    }
+
+
 
     public Long getId() {
         return id;
