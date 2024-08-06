@@ -38,10 +38,3 @@ public class CourseApi {
         return courseService.getCoursesByStudentIdApplications(id);
     }
 }
-
-
-
-
-//study year
-//o Capacity level
-//o Category
