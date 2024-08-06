@@ -22,7 +22,7 @@
     <h3>Selected User: {{ selectedUser.name }}</h3>
     <h4>User Role: {{ selectedUser.id }}</h4>
     <div *ngIf="selectedUser.role === 'student'">
-      <h4>Enrolled Courses:</h4>
+      <h4>Enrolled Courses: (Mandatory ones initially)</h4>
       <ul>
         <li *ngFor="let course of courses">
           {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}

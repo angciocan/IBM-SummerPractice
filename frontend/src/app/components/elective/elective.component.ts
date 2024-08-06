@@ -41,16 +41,13 @@ export class ElectiveComponent implements OnInit {
     private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    // Hardcoded values for setting the enrollment period
     const hardcodedStartTime = '2024-08-01';
     const hardcodedEndTime = '2024-08-15';
 
-    // Set the enrollment period with the hardcoded values
     this.setEnrollmentPeriod(hardcodedStartTime, hardcodedEndTime);
 
     this.enrollmentAdministrationService.getAllEnrollmentAdministration().subscribe({
       next: (enrollments: EnrollmentAdministration[]) => {
-        // console.log('Enrollments:', enrollments);
         this.enrollmentAdministrations = enrollments;
       },
       error: (err) => {
