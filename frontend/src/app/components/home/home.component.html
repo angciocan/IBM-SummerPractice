@@ -19,13 +19,13 @@
     <h4>Mandatory Courses</h4>
     <ul>
       <li *ngFor="let course of mandatoryCourses">
-        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
+        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }}
       </li>
     </ul>
     <h4>Elective Courses</h4>
     <ul>
       <li *ngFor="let course of electiveCourses">
-        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
+        {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }}
       </li>
     </ul>
 

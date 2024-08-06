@@ -1,3 +1,3 @@
 export enum EnrollmentStatus {
-  ENROLLED, PENDING, CANCELLED
+  ENROLLED, PENDING, CLOSED
 }

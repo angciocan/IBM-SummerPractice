@@ -9,6 +9,7 @@ import {Student} from "../../interfaces/student";
 import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 import {Teacher} from "../../interfaces/teacher";
 import {CourseService} from "../../services/course.service";
+import {forkJoin, map, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ export class HomeComponent implements OnInit {
   courses: Course[] = [];
   mandatoryCourses: Course[] = [];
   electiveCourses: Course[] = [];
+  courseApplicationCounts: { [courseId: number]: number } = {};
   constructor(
     private selectedUserService: SelectedUserService,
     private studentService: StudentService,
@@ -42,20 +44,28 @@ export class HomeComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  private loadCoursesForStudent(studentId: number): void {
-    this.studentService.getCoursesForStudent(studentId).subscribe(courses => {
-      this.courses = courses;
-      // console.log(courses)
-      // this.mandatoryCourses = this.courses.filter(course => course.category == 'mandatory');
-      // this.electiveCourses = this.courses.filter(course => course.category == 'elective');
-    });
-  }
   private loadCoursesSameYearForStudent(studyYear: number): void {
-    this.courseService.getCoursesByStudyYear(studyYear).subscribe(courses => {
-      this.courses = courses;
-      this.mandatoryCourses = this.courses.filter(course => course.category == 'mandatory');
-      this.electiveCourses = this.courses.filter(course => course.category == 'elective');
-      console.log(this.mandatoryCourses)
+    this.courseService.getCoursesByStudyYear(studyYear).pipe(
+      switchMap(courses => {
+        this.courses = courses;
+        this.mandatoryCourses = this.courses.filter(course => course.category === 'mandatory');
+        this.electiveCourses = this.courses.filter(course => course.category === 'elective');
+
+        // Create an array of observables for the application counts
+        const applicationObservables = this.courses.map(course =>
+          this.courseService.getNrOfApplicationsForCourse(course.id).pipe(
+            map(count => ({ courseId: course.id, count }))
+          )
+        );
+
+        // Use forkJoin to wait for all observables to complete
+        return forkJoin(applicationObservables);
+      })
+    ).subscribe(applicationCounts => {
+      applicationCounts.forEach(appCount => {
+        this.courseApplicationCounts[appCount.courseId] = appCount.count;
+      });
+      console.log(this.courseApplicationCounts);
     });
   }
 
