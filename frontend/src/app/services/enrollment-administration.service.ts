@@ -19,7 +19,6 @@ export class EnrollmentAdministrationService {
   setEnrollmentPeriod(startTime: string, endTime: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/setEnrollmentPeriod/${startTime}/${endTime}`, null);
   }
-
   getEnrollmentPeriod(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/getEnrollmentPeriod`);
   }

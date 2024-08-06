@@ -1,6 +1,25 @@
 <h4>Elective Courses</h4>
-<ul cdkDropList (cdkDropListDropped)="drop($event)">
+
+<!-- Conditional message for enrollment period status -->
+<p *ngIf="isEnrollmentPeriodActive(); else closedMessage">
+  Applications are open!
+</p>
+<ng-template #closedMessage>
+  <p>Applications are closed!</p>
+</ng-template>
+
+<!-- Drag-and-drop list for elective courses -->
+<ul cdkDropList
+    (cdkDropListDropped)="drop($event)"
+    [ngClass]="{'disabled-list': !isEnrollmentPeriodActive()}"
+    [attr.disabled]="!isEnrollmentPeriodActive() ? true : null">
   <li *ngFor="let course of electiveCourses" cdkDrag>
     {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }}
   </li>
 </ul>
+
+<!-- Button to create enrollment -->
+<button (click)="createEnrollmentForFirstTwoCourses()"
+        [attr.disabled]="!isEnrollmentPeriodActive() ? true : null">
+  Enroll in First Two Courses
+</button>

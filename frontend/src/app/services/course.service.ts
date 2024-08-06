@@ -27,4 +27,9 @@ export class CourseService {
   getNrOfApplicationsForCourse(courseId: number): Observable<number> {
     return this.http.get<number>(`${this.apiUrl2}/nr-of-current-applications/${courseId}`);
   }
+
+  createEnrollment(studentId: number, courseId: number): Observable<void> {
+    const body = { studentId, courseId };
+    return this.http.post<void>(`${this.apiUrl2}/create`, body);
+  }
 }

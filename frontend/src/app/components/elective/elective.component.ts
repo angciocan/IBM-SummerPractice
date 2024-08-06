@@ -6,9 +6,9 @@ import {SelectedUserService} from "../../services/selected-user.service";
 import {Student} from "../../interfaces/student";
 import {User} from "../../interfaces/user";
 import {forkJoin, map, switchMap} from "rxjs";
-import {CdkDragDrop, moveItemInArray, DragDropModule, CdkDropList, CdkDrag} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag} from '@angular/cdk/drag-drop';
 import {CourseService} from "../../services/course.service";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-elective',
@@ -18,7 +18,8 @@ import {NgForOf, NgIf} from "@angular/common";
     NgForOf,
     NgIf,
     CdkDropList,
-    CdkDrag
+    CdkDrag,
+    NgClass
   ],
   styleUrls: ['./elective.component.scss']
 })
@@ -62,6 +63,7 @@ export class ElectiveComponent implements OnInit {
         if (enrollmentPeriod.length === 2) {
           this.startTime = new Date(enrollmentPeriod[0]);
           this.endTime = new Date(enrollmentPeriod[1]);
+          this.cdr.detectChanges();
         }
       },
       error: (err) => {
@@ -112,9 +114,42 @@ export class ElectiveComponent implements OnInit {
     });
   }
 
+  createEnrollment(studentId: number, courseId: number): void {
+    this.courseService.createEnrollment(studentId, courseId).subscribe({
+      next: () => {
+        console.log('Enrollment created successfully');
+      },
+      error: (err) => {
+        console.error('Error creating enrollment:', err);
+      }
+    });
+  }
+
+  createEnrollmentForFirstTwoCourses(): void {
+    if (this.electiveCourses.length >= 2 && this.selectedUser && (this.selectedUser as Student).role === 'student') {
+      const studentId = (this.selectedUser as Student).id;
+      const courseIds = [this.electiveCourses[0].id, this.electiveCourses[1].id];
+
+      this.createEnrollment(studentId, courseIds[0]);
+
+      this.createEnrollment(studentId, courseIds[1]);
+    } else {
+      console.warn('Not enough courses available or no student selected');
+    }
+  }
+
   drop(event: CdkDragDrop<Course[]>): void {
     moveItemInArray(this.electiveCourses, event.previousIndex, event.currentIndex);
     console.log('Elective courses reordered:', this.electiveCourses);
   }
+
+  isEnrollmentPeriodActive(): boolean {
+    const currentTime = new Date();
+    if (this.startTime && this.endTime) {
+      return currentTime >= this.startTime && currentTime <= this.endTime;
+    }
+    return false
+  }
+
 
 }
