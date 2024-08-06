@@ -2,7 +2,7 @@
   <h2>Students</h2>
   <ul>
     <li *ngFor="let student of students" (click)="selectUser(student)">
-      {{ student.name }}
+      {{ student.name }} - Year of study: {{student.studyYear}}
     </li>
   </ul>
   <h2>Teachers</h2>
@@ -22,7 +22,7 @@
     <h3>Selected User: {{ selectedUser.name }}</h3>
     <h4>User Role: {{ selectedUser.id }}</h4>
     <div *ngIf="selectedUser.role === 'student'">
-      <h4>Enrolled Courses: (Mandatory ones initially)</h4>
+      <h4>Enrolled + Pending Courses:</h4>
       <ul>
         <li *ngFor="let course of courses">
           {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}

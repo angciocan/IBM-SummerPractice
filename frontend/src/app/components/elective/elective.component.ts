@@ -32,6 +32,7 @@ export class ElectiveComponent implements OnInit {
   protected selectedUser: User | null = null;
   private courses: Course[] = [];
   courseApplicationCounts: { [courseId: number]: number } = {};
+  studentsEnrolled: { [courseId: number]: Student[] } = {};
 
 
   constructor(
@@ -41,7 +42,7 @@ export class ElectiveComponent implements OnInit {
     private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    const hardcodedStartTime = '2024-08-01';
+    const hardcodedStartTime = '2024-08-15';
     const hardcodedEndTime = '2024-08-15';
 
     this.setEnrollmentPeriod(hardcodedStartTime, hardcodedEndTime);
@@ -61,6 +62,11 @@ export class ElectiveComponent implements OnInit {
           this.startTime = new Date(enrollmentPeriod[0]);
           this.endTime = new Date(enrollmentPeriod[1]);
           this.cdr.detectChanges();
+
+          // Load students enrolled in courses if the enrollment period is closed
+          if (!this.isEnrollmentPeriodActive()) {
+            this.loadStudentsEnrolledInCourses();
+          }
         }
       },
       error: (err) => {
@@ -70,14 +76,15 @@ export class ElectiveComponent implements OnInit {
 
     this.selectedUserService.selectedUser$.subscribe(user => {
       this.selectedUser = user;
-      console.log(this.selectedUser)
+      // console.log(this.selectedUser);
       if (this.selectedUser && ((this.selectedUser as Student).role === 'student')) {
-        this.loadCoursesSameYearForStudent((this.selectedUser as Student).studyYear)
+        this.loadCoursesSameYearForStudent((this.selectedUser as Student).studyYear);
       }
     });
-    this.cdr.detectChanges();
 
+    this.cdr.detectChanges();
   }
+
 
   private loadCoursesSameYearForStudent(studyYear: number): void {
     this.courseService.getCoursesByStudyYear(studyYear).pipe(
@@ -96,7 +103,8 @@ export class ElectiveComponent implements OnInit {
       applicationCounts.forEach(appCount => {
         this.courseApplicationCounts[appCount.courseId] = appCount.count;
       });
-      console.log(this.electiveCourses)
+      // console.log(this.electiveCourses)
+
     });
   }
 
@@ -122,18 +130,31 @@ export class ElectiveComponent implements OnInit {
     });
   }
 
-  createEnrollmentForFirstTwoCourses(): void {
-    if (this.electiveCourses.length >= 2 && this.selectedUser && (this.selectedUser as Student).role === 'student') {
+  createEnrollmentForSelectedCourses(): void {
+    if (this.selectedUser && (this.selectedUser as Student).role === 'student') {
       const studentId = (this.selectedUser as Student).id;
-      const courseIds = [this.electiveCourses[0].id, this.electiveCourses[1].id];
+      const studyYear = (this.selectedUser as Student).studyYear;
 
-      this.createEnrollment(studentId, courseIds[0]);
+      // Filter courses based on the selected user's study year
+      const eligibleCourses = this.electiveCourses.filter(course => course.studyYear === studyYear);
 
-      this.createEnrollment(studentId, courseIds[1]);
+      // Check if there are enough courses available for enrollment
+      if (eligibleCourses.length < studyYear) {
+        console.warn('Not enough eligible courses available for the student\'s study year');
+        return;
+      }
+
+      // Enroll the student in the required number of courses
+      for (let i = 0; i < studyYear; i++) {
+        this.createEnrollment(studentId, eligibleCourses[i].id);
+      }
+
+      console.log(`Enrolled student ${studentId} in ${studyYear} courses.`);
     } else {
-      console.warn('Not enough courses available or no student selected');
+      console.warn('No student selected or the selected user is not a student');
     }
   }
+
 
   drop(event: CdkDragDrop<Course[]>): void {
     moveItemInArray(this.electiveCourses, event.previousIndex, event.currentIndex);
@@ -146,6 +167,22 @@ export class ElectiveComponent implements OnInit {
       return currentTime >= this.startTime && currentTime <= this.endTime;
     }
     return false
+  }
+
+  private loadStudentsEnrolledInCourses(): void {
+    const courseObservables = this.electiveCourses.map(course =>
+      this.courseService.getStudentsEnrolledToCourse(course.id).pipe(
+        map(students => ({ courseId: course.id, students }))
+      )
+    );
+
+    forkJoin(courseObservables).subscribe(courseStudents => {
+      courseStudents.forEach(({ courseId, students }) => {
+        this.studentsEnrolled[courseId] = students;
+
+      });
+      this.cdr.detectChanges();
+    });
   }
 
 

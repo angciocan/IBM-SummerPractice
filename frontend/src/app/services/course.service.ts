@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Course} from "../interfaces/course";
+import {Student} from "../interfaces/student";
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,9 @@ export class CourseService {
   }
   getNrOfApplicationsForCourse(courseId: number): Observable<number> {
     return this.http.get<number>(`${this.apiUrl2}/nr-of-current-applications/${courseId}`);
+  }
+  getStudentsEnrolledToCourse(courseId:number): Observable<Student[]>{
+    return this.http.get<Student[]>(`${this.apiUrl2}/students-enrolled-to-course/${courseId}`)
   }
 
   createEnrollment(studentId: number, courseId: number): Observable<void> {

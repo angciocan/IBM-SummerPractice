@@ -1,6 +1,7 @@
 insert into student(grade,study_year,faculty_section,name) values (10,4,'CTI','Robert');
 insert into student(grade,study_year,faculty_section,name) values (7,3,'CTI','Angleo');
 insert into student(grade,study_year,faculty_section,name) values (8,2,'IS','Mircea');
+insert into student(grade,study_year,faculty_section,name) values (9,2,'CTI-EN','Marian');
 --
 insert into teacher(name) values ('Nicolina');
 -- --
@@ -29,6 +30,13 @@ insert into enrollment(course_id,student_id,status) values (2,3,'ENROLLED');
 insert into enrollment(course_id,student_id,status) values (3,3,'ENROLLED');
 insert into enrollment(course_id,student_id,status) values (4,2,'ENROLLED');
 insert into enrollment(course_id,student_id,status) values (5,2,'ENROLLED');
+
+-- insert into enrollment(course_id,student_id,status) values (6,3,'PENDING');
+-- insert into enrollment(course_id,student_id,status) values (7,3,'PENDING');
+insert into enrollment(course_id,student_id,status) values (4,4,'ENROLLED');
+insert into enrollment(course_id,student_id,status) values (5,4,'ENROLLED');
+
+
 
 
 -- insert into students(id) values (10);

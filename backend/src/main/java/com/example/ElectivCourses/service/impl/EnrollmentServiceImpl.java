@@ -4,10 +4,12 @@ import com.example.ElectivCourses.Model.dto.CourseDTO;
 import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
 import com.example.ElectivCourses.Model.dto.StudentDTO;
 import com.example.ElectivCourses.Model.dto.TeacherDTO;
+import com.example.ElectivCourses.Model.entity.Course;
 import com.example.ElectivCourses.Model.entity.Enrollment;
 import com.example.ElectivCourses.Model.entity.EnrollmentStatus;
 import com.example.ElectivCourses.converter.EnrollmentConverter;
 import com.example.ElectivCourses.converter.StudentConverter;
+import com.example.ElectivCourses.repository.CourseRepository;
 import com.example.ElectivCourses.repository.EnrollmentRepository;
 import com.example.ElectivCourses.service.EnrollmentService;
 import com.example.ElectivCourses.service.EnrollmentAdministrationService;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 public class EnrollmentServiceImpl implements EnrollmentService {
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+    @Autowired
+    private CourseRepository courseRepository;
     @Autowired
     private EnrollmentAdministrationService enrollmentAdministrationService;
 
@@ -67,7 +71,24 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             return EnrollmentConverter.toDTO(alreadyExists.get());
         }
 
+        // Fetch the course entity to update maxStudents
+        Course course = courseRepository.findById(newEnrollment.getCourse().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        // Check if there is space left in the course
+        if (course.getMaxStudents() <= 0) {
+            throw new IllegalArgumentException("No more spaces available in the course.");
+        }
+
+        // Decrease the maxStudents by 1
+        course.setMaxStudents(course.getMaxStudents() - 1);
+
+        // Save the updated course
+        courseRepository.save(course);
+
+        // Save the new enrollment
         newEnrollment = enrollmentRepository.save(newEnrollment);
+
         return EnrollmentConverter.toDTO(newEnrollment);
     }
 

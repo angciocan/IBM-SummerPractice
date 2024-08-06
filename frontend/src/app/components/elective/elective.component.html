@@ -6,20 +6,27 @@
 </p>
 <ng-template #closedMessage>
   <p>Applications are closed!</p>
+
+  <div *ngFor="let course of electiveCourses">
+    <h5>{{ course.courseName }} - Enrolled Students:</h5>
+    <ul>
+      <li *ngFor="let student of studentsEnrolled[course.id]">
+        {{ student.name }} ({{ student.id }})
+      </li>
+    </ul>
+  </div>
 </ng-template>
 
-<!-- Drag-and-drop list for elective courses -->
 <ul cdkDropList
     (cdkDropListDropped)="drop($event)"
     [ngClass]="{'disabled-list': !isEnrollmentPeriodActive()}"
     [attr.disabled]="!isEnrollmentPeriodActive() ? true : null">
   <li *ngFor="let course of electiveCourses" cdkDrag>
-    {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }}
+    {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }} - Number of places left: {{course.maxStudents || 0}}
   </li>
 </ul>
 
-<!-- Button to create enrollment -->
-<button (click)="createEnrollmentForFirstTwoCourses()"
+<button (click)="createEnrollmentForSelectedCourses()"
         [attr.disabled]="!isEnrollmentPeriodActive() ? true : null">
-  Enroll in First Two Courses
+  Enroll in The Courses
 </button>
