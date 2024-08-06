@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -22,21 +23,36 @@ public class EnrollmentAdministrationServiceImpl implements EnrollmentAdministra
     }
 
     @Override
-    public int nrOfCoursesByStudyYear(int studyYear) {
-        return enrollmentAdministrationRepository.findAll().stream().filter(enrollmentAdministration -> enrollmentAdministration.getStudyYear() == studyYear).findAny().get().getNrOfCourses();
+    public int nrOfMandatoryCoursesByYear(int studyYear) {
+        return enrollmentAdministrationRepository.findAll().stream()
+                .filter(enrollmentAdministration -> enrollmentAdministration.getStudyYear() == studyYear)
+                .findAny()
+                .map(EnrollmentAdministration::getNrOfMandatoryCourses)
+                .orElseThrow(() -> new NoSuchElementException("No EnrollmentAdministration found for study year: " + studyYear));
     }
 
     @Override
-    public EnrollmentAdministration createEnrollmentAdministration(int studyYear, int nrOfCourses) {
+    public int nrOfElectiveCoursesByYear(int studyYear) {
+        return enrollmentAdministrationRepository.findAll().stream()
+                .filter(enrollmentAdministration -> enrollmentAdministration.getStudyYear() == studyYear)
+                .findAny()
+                .map(EnrollmentAdministration::getNrOfElectiveCourses)
+                .orElseThrow(() -> new NoSuchElementException("No EnrollmentAdministration found for study year: " + studyYear));
+    }
+
+    @Override
+    public EnrollmentAdministration createEnrollmentAdministration(int studyYear, int nrOfMandatoryCourses, int nrOfElectiveCourses) {
         Optional<EnrollmentAdministration> enrollmentAdministration1 = enrollmentAdministrationRepository.findAll().stream()
                 .filter(enrollmentAdministration -> enrollmentAdministration.getStudyYear() == studyYear).findAny();
 
         if (enrollmentAdministration1.isPresent()) {
-            enrollmentAdministration1.get().setNrOfCourses(nrOfCourses);
+            enrollmentAdministration1.get().setNrOfMandatoryCourses(nrOfMandatoryCourses);
+            enrollmentAdministration1.get().setNrOfElectiveCourses(nrOfElectiveCourses);
+
             return enrollmentAdministrationRepository.save(enrollmentAdministration1.get());
         }
         else {
-            return enrollmentAdministrationRepository.save(new EnrollmentAdministration(studyYear, nrOfCourses));
+            return enrollmentAdministrationRepository.save(new EnrollmentAdministration(studyYear, nrOfMandatoryCourses,nrOfElectiveCourses));
         }
     }
 

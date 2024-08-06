@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface EnrollmentAdministrationService {
     List<EnrollmentAdministration> getAllEnrollmentAdministrations();
-    int nrOfCoursesByStudyYear(int studyYear);
-    EnrollmentAdministration createEnrollmentAdministration(int studyYear, int nrOfCourses);
+    int nrOfMandatoryCoursesByYear(int studyYear);
+    int nrOfElectiveCoursesByYear(int studyYear);
+    EnrollmentAdministration createEnrollmentAdministration(int studyYear, int nrOfMandatoryCourses, int nrOfElectivCourses);
     void deleteEnrollmentAdministration(int enrollmentAdministrationId);
     void setEnrollmentPeriod(LocalDate startTime, LocalDate endTime);
     ArrayList<LocalDate> getEnrollmentPeriod();

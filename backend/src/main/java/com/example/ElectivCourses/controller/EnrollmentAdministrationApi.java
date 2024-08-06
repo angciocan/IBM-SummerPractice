@@ -22,14 +22,20 @@ public class EnrollmentAdministrationApi {
         return enrollmentAdministrationService.getAllEnrollmentAdministrations();
     }
 
-    @GetMapping("/getNrOfCoursesByStudyYear/{studyYear}")
-    public int nrOfCoursesByStudyYear(@PathVariable("studyYear") int studyYear) {
-        return enrollmentAdministrationService.nrOfCoursesByStudyYear(studyYear);
+    @GetMapping("/nrOfMandatoryCoursesByYear/{studyYear}")
+    public int nrOfMandatoryCoursesByYear(@PathVariable("studyYear") int studyYear) {
+        return enrollmentAdministrationService.nrOfMandatoryCoursesByYear(studyYear);
     }
 
+    @GetMapping("/nrOfElectiveCoursesByYear/{studyYear}")
+    public int nrOfElectiveCoursesByYear(@PathVariable("studyYear") int studyYear) {
+        return enrollmentAdministrationService.nrOfElectiveCoursesByYear(studyYear);
+    }
+
+
     @PostMapping("/create/{studyYear}/{nrOfCourses}")
-    EnrollmentAdministration createEnrollmentAdministration(@PathVariable("studyYear") int studyYear, @PathVariable("nrOfCourses") int nrOfCourses) {
-        return enrollmentAdministrationService.createEnrollmentAdministration(studyYear, nrOfCourses);
+    EnrollmentAdministration createEnrollmentAdministration(@PathVariable("studyYear") int studyYear, @PathVariable("nrOfCourses") int nrOfMandatoryCourses, @PathVariable("nrOfCourses") int nrOfElectiveCourses) {
+        return enrollmentAdministrationService.createEnrollmentAdministration(studyYear, nrOfMandatoryCourses, nrOfElectiveCourses);
     }
 
     @DeleteMapping("/delete/{studyYear}")

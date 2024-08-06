@@ -19,24 +19,21 @@ public class EnrollmentAdministration {
     private int studyYear;
 
     @Column
-    private int nrOfCourses;
+    private int nrOfMandatoryCourses;
+    @Column
+    private int nrOfElectiveCourses;
+
+    public EnrollmentAdministration(int studyYear, int nrOfMandatoryCourses, int nrOfElectiveCourses) {
+        this.studyYear = studyYear;
+        this.nrOfMandatoryCourses = nrOfMandatoryCourses;
+        this.nrOfElectiveCourses = nrOfElectiveCourses;
+    }
 
     @Transient
     private static LocalDate startTime;
 
     @Transient
     private static LocalDate endTime;
-
-    public EnrollmentAdministration(Long id, int nrOfCourses, int studyYear) {
-        this.id = id;
-        this.nrOfCourses = nrOfCourses;
-        this.studyYear = studyYear;
-    }
-
-    public EnrollmentAdministration(int studyYear, int nrOfCourses) {
-        this.studyYear = studyYear;
-        this.nrOfCourses = nrOfCourses;
-    }
 
     public EnrollmentAdministration() {}
 
@@ -56,12 +53,20 @@ public class EnrollmentAdministration {
         this.studyYear = studyYear;
     }
 
-    public int getNrOfCourses() {
-        return nrOfCourses;
+    public void setNrOfMandatoryCourses(int nrOfMandatoryCourses) {
+        this.nrOfMandatoryCourses = nrOfMandatoryCourses;
     }
 
-    public void setNrOfCourses(int nrOfCourses) {
-        this.nrOfCourses = nrOfCourses;
+    public void setNrOfElectiveCourses(int nrOfElectiveCourses) {
+        this.nrOfElectiveCourses = nrOfElectiveCourses;
+    }
+
+    public int getNrOfMandatoryCourses() {
+        return nrOfMandatoryCourses;
+    }
+
+    public int getNrOfElectiveCourses() {
+        return nrOfElectiveCourses;
     }
 
     public static LocalDate getStartTime() {
