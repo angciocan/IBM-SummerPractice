@@ -8,6 +8,7 @@ import {Course} from "../../interfaces/course";
 import {Student} from "../../interfaces/student";
 import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 import {Teacher} from "../../interfaces/teacher";
+import {CourseService} from "../../services/course.service";
 
 @Component({
   selector: 'app-home',
@@ -19,29 +20,23 @@ import {Teacher} from "../../interfaces/teacher";
 export class HomeComponent implements OnInit {
   selectedUser: User | null = null;
   courses: Course[] = [];
-  electiveCourses: string[] = [
-    'Istoria Artei',
-    'Programare Avansată',
-    'Psihologie',
-    'Fotografie Digitală',
-    'Marketing Online'
-  ];
-
+  mandatoryCourses: Course[] = [];
+  electiveCourses: Course[] = [];
   constructor(
     private selectedUserService: SelectedUserService,
     private studentService: StudentService,
-    private cdr: ChangeDetectorRef) {}
+    private cdr: ChangeDetectorRef,
+    private courseService: CourseService) {}
 
   ngOnInit(): void {
     this.selectedUserService.selectedUser$.subscribe(user => {
       this.selectedUser = user;
-      console.log(user)
       if (this.selectedUser && ((this.selectedUser as Student).role === 'student')) {
-        this.loadCoursesForStudent(this.selectedUser.id);
+        // this.loadCoursesForStudent(this.selectedUser.id);
+        this.loadCoursesSameYearForStudent((this.selectedUser as Student).studyYear)
       }
       if (this.selectedUser && ((this.selectedUser as Teacher).role === 'teacher')) {
         this.courses = (this.selectedUser as Teacher).courses
-        console.log(this.courses)
       }
     });
     this.cdr.detectChanges();
@@ -50,6 +45,17 @@ export class HomeComponent implements OnInit {
   private loadCoursesForStudent(studentId: number): void {
     this.studentService.getCoursesForStudent(studentId).subscribe(courses => {
       this.courses = courses;
+      // console.log(courses)
+      // this.mandatoryCourses = this.courses.filter(course => course.category == 'mandatory');
+      // this.electiveCourses = this.courses.filter(course => course.category == 'elective');
+    });
+  }
+  private loadCoursesSameYearForStudent(studyYear: number): void {
+    this.courseService.getCoursesByStudyYear(studyYear).subscribe(courses => {
+      this.courses = courses;
+      this.mandatoryCourses = this.courses.filter(course => course.category == 'mandatory');
+      this.electiveCourses = this.courses.filter(course => course.category == 'elective');
+      console.log(this.mandatoryCourses)
     });
   }
 
@@ -57,7 +63,4 @@ export class HomeComponent implements OnInit {
     return user?.role === 'student';
   }
 
-  drop(event: CdkDragDrop<string[]>): void {
-    moveItemInArray(this.electiveCourses, event.previousIndex, event.currentIndex);
-  }
 }

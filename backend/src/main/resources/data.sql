@@ -6,9 +6,9 @@ insert into teacher(name) values ('Nicolina');
 -- --
 insert into administrator(name) values ('BOSS');
 --
-insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name) values (2,99,3,'15:00',1,'mandatory','fizica');
+insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name) values (2,99,2,'15:00',1,'mandatory','fizica');
 --
-insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name) values (4,23,3,'17:00',1,'mandatory','baze de date');
+insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name) values (4,23,3,'17:00',1,'elective','baze de date');
 insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name) values (4,23,3,'17:00',1,'mandatory','bazele programarii');
 insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name) values (4,23,3,'17:00',1,'mandatory','programare web');
 
