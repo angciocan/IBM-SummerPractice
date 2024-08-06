@@ -33,8 +33,8 @@ public class EnrollmentAdministrationApi {
     }
 
 
-    @PostMapping("/create/{studyYear}/{nrOfCourses}")
-    EnrollmentAdministration createEnrollmentAdministration(@PathVariable("studyYear") int studyYear, @PathVariable("nrOfCourses") int nrOfMandatoryCourses, @PathVariable("nrOfCourses") int nrOfElectiveCourses) {
+    @PostMapping("/create/{studyYear}/{nrOfMandatoryCourses}/{nrOfElectiveCourses}")
+    EnrollmentAdministration createEnrollmentAdministration(@PathVariable("studyYear") int studyYear, @PathVariable("nrOfMandatoryCourses") int nrOfMandatoryCourses, @PathVariable("nrOfElectiveCourses") int nrOfElectiveCourses) {
         return enrollmentAdministrationService.createEnrollmentAdministration(studyYear, nrOfMandatoryCourses, nrOfElectiveCourses);
     }
 
