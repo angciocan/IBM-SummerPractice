@@ -1,30 +1,23 @@
 <h4>Elective Courses</h4>
 
-<!-- Conditional message for enrollment period status -->
 <p *ngIf="isEnrollmentPeriodActive(); else closedMessage">
   Applications are open!
 </p>
 <ng-template #closedMessage>
   <p>Applications are closed!</p>
-
-  <div *ngFor="let course of electiveCourses">
-    <h5>{{ course.courseName }} - Enrolled Students:</h5>
-    <ul>
-      <li *ngFor="let student of studentsEnrolled[course.id]">
-        {{ student.name }} ({{ student.id }})
-      </li>
-    </ul>
-  </div>
 </ng-template>
 
-<ul cdkDropList
-    (cdkDropListDropped)="drop($event)"
-    [ngClass]="{'disabled-list': !isEnrollmentPeriodActive()}"
-    [attr.disabled]="!isEnrollmentPeriodActive() ? true : null">
+<ul cdkDropList (cdkDropListDropped)="drop($event)" [ngClass]="{'disabled-list': !isEnrollmentPeriodActive()}" [attr.disabled]="!isEnrollmentPeriodActive() ? true : null">
   <li *ngFor="let course of electiveCourses" cdkDrag>
-    {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }} - Number of places left: {{course.maxStudents || 0}}
+    <div class="course-container">
+      <div class="course-name">{{ course.courseName }}</div>
+      <div class="course-details">
+        {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }} - Number of places left: {{course.maxStudents || 0}}
+      </div>
+    </div>
   </li>
 </ul>
+
 
 <button (click)="createEnrollmentForSelectedCourses()"
         [attr.disabled]="!isEnrollmentPeriodActive() ? true : null">

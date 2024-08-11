@@ -4,6 +4,7 @@ import com.example.ElectivCourses.Model.dto.CourseDTO;
 import com.example.ElectivCourses.Model.dto.StudentDTO;
 import com.example.ElectivCourses.Model.entity.Enrollment;
 import com.example.ElectivCourses.service.EnrollmentService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +20,16 @@ public class EnrollmentApi {
     @Autowired
     private EnrollmentService enrollmentService;
 
-    @PostMapping("/create")
-    public ResponseEntity<EnrollmentDTO> createEnrollment(@RequestBody EnrollmentDTO enrollmentDTO) {
-        EnrollmentDTO enrollmentDTO2 = enrollmentService.createEnrollment(enrollmentDTO);
-        return new ResponseEntity<>(enrollmentDTO2, HttpStatus.CREATED);
-    }
-
     @GetMapping("/")
     public ResponseEntity<List<EnrollmentDTO>> getAllEnrollments() {
         List<EnrollmentDTO> enrollments = enrollmentService.getAllEnrollments();
         return new ResponseEntity<>(enrollments, HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<EnrollmentDTO> createEnrollment(@RequestBody EnrollmentDTO enrollmentDTO) {
+        EnrollmentDTO enrollmentDTO2 = enrollmentService.createEnrollment(enrollmentDTO);
+        return new ResponseEntity<>(enrollmentDTO2, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{studentId}-{courseId}")

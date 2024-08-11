@@ -14,4 +14,5 @@ public interface EnrollmentService {
     long getNrOfCurrentApplications(Long courseId);
     List<StudentDTO> getStudentsEnrolledToCourse(Long courseId);
     List<CourseDTO> getCoursesForStudent(Long studentId);
+    void fixEnrollments();
 }

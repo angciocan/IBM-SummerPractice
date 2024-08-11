@@ -6,7 +6,6 @@ import {ReplaceNullWithTextPipe} from "../../pipes/replace-null-with-text.pipe";
 import {StudentService} from "../../services/student.service";
 import {Course} from "../../interfaces/course";
 import {Student} from "../../interfaces/student";
-import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 import {Teacher} from "../../interfaces/teacher";
 import {CourseService} from "../../services/course.service";
 import {forkJoin, map, switchMap} from "rxjs";
@@ -14,7 +13,7 @@ import {forkJoin, map, switchMap} from "rxjs";
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ReplaceNullWithTextPipe, DragDropModule],
+  imports: [CommonModule, ReplaceNullWithTextPipe],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

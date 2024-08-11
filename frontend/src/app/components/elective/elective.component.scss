@@ -1,0 +1,38 @@
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+.course-container {
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.course-name {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.course-details {
+  font-size: 14px;
+  color: #555;
+}
+
+.disabled-list .course-container {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+}
+
+.course-container:hover {
+  background-color: #f9f9f9;
+}
