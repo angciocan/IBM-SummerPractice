@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {map, Observable} from "rxjs";
 import {Teacher} from "../interfaces/teacher";
-import {Course} from "../interfaces/course";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +18,5 @@ export class TeacherService {
     );
   }
 
-  getCoursesForTeacher(teacherId: number): Observable<Course[]> {
-    return this.http.get<Course[]>(`http://localhost:8080/enrollment/courses-of-the-student/${teacherId}`);
-  }
+
 }

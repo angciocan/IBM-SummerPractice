@@ -146,8 +146,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return EnrollmentConverter.toDTO(newEnrollment);
     }
 
-
-
     @Override
     public List<EnrollmentDTO> getAllEnrollments() {
         fixEnrollments();

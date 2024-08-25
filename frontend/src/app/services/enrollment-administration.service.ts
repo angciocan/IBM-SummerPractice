@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Enrollment} from "../interfaces/enrollment";
 import {EnrollmentAdministration} from "../interfaces/enrollment-administration";
 
 @Injectable({

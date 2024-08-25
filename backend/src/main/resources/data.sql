@@ -27,12 +27,12 @@ insert into enrollment_administration(nr_of_mandatory_courses,nr_of_elective_cou
 -- ENROLLMENT 1-5 MANDATORY
 insert into enrollment(course_id,student_id,status) values (1,3,'ENROLLED');
 insert into enrollment(course_id,student_id,status) values (2,3,'ENROLLED');
-insert into enrollment(course_id,student_id,status) values (3,3,'PENDING');
+insert into enrollment(course_id,student_id,status) values (3,3,'ENROLLED');
 insert into enrollment(course_id,student_id,status) values (4,2,'ENROLLED');
 insert into enrollment(course_id,student_id,status) values (5,2,'ENROLLED');
 -- ENROLLMENT 6-9 ELECTIVE
--- insert into enrollment(course_id,student_id,status) values (6,3,'ENROLLED');
--- insert into enrollment(course_id,student_id,status) values (7,3,'ENROLLED');
+insert into enrollment(course_id,student_id,status) values (6,3,'ENROLLED');
+insert into enrollment(course_id,student_id,status) values (7,3,'ENROLLED');
 -- insert into enrollment(course_id,student_id,status) values (4,4,'ENROLLED');
 -- insert into enrollment(course_id,student_id,status) values (5,4,'ENROLLED');
 

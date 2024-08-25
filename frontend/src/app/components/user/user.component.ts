@@ -9,6 +9,7 @@ import {CommonModule} from "@angular/common";
 import {TeacherService} from "../../services/teacher.service";
 import {AdministratorService} from "../../services/administrator.service";
 import {Course} from "../../interfaces/course";
+import {EnrollmentService} from "../../services/enrollment.service";
 
 @Component({
   selector: 'app-user',
@@ -28,7 +29,8 @@ export class UserComponent implements OnInit{
     private studentService: StudentService,
     private teacherService: TeacherService,
     private administratorService: AdministratorService,
-    private selectedUserService: SelectedUserService
+    private selectedUserService: SelectedUserService,
+    private enrollmentService: EnrollmentService
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +74,7 @@ export class UserComponent implements OnInit{
   }
 
   private loadCoursesForStudent(studentId: number): void {
-    this.studentService.getCoursesForStudent(studentId).subscribe(courses => {
+    this.enrollmentService.getCoursesForStudent(studentId).subscribe(courses => {
       this.courses = courses;
       console.log(this.courses)
     });

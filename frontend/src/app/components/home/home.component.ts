@@ -9,6 +9,7 @@ import {Student} from "../../interfaces/student";
 import {Teacher} from "../../interfaces/teacher";
 import {CourseService} from "../../services/course.service";
 import {forkJoin, map, switchMap} from "rxjs";
+import {EnrollmentService} from "../../services/enrollment.service";
 
 @Component({
   selector: 'app-home',
@@ -27,7 +28,8 @@ export class HomeComponent implements OnInit {
     private selectedUserService: SelectedUserService,
     private studentService: StudentService,
     private cdr: ChangeDetectorRef,
-    private courseService: CourseService) {}
+    private courseService: CourseService,
+    private enrollmentService: EnrollmentService) {}
 
   ngOnInit(): void {
     this.selectedUserService.selectedUser$.subscribe(user => {
@@ -50,14 +52,12 @@ export class HomeComponent implements OnInit {
         this.mandatoryCourses = this.courses.filter(course => course.category === 'mandatory');
         this.electiveCourses = this.courses.filter(course => course.category === 'elective');
 
-        // Create an array of observables for the application counts
         const applicationObservables = this.courses.map(course =>
-          this.courseService.getNrOfApplicationsForCourse(course.id).pipe(
+          this.enrollmentService.getNrOfApplicationsForCourse(course.id).pipe(
             map(count => ({ courseId: course.id, count }))
           )
         );
 
-        // Use forkJoin to wait for all observables to complete
         return forkJoin(applicationObservables);
       })
     ).subscribe(applicationCounts => {

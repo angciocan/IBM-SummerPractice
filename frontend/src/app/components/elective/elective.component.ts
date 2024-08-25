@@ -9,6 +9,7 @@ import {forkJoin, map, switchMap} from "rxjs";
 import {CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag} from '@angular/cdk/drag-drop';
 import {CourseService} from "../../services/course.service";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {EnrollmentService} from "../../services/enrollment.service";
 
 @Component({
   selector: 'app-elective',
@@ -38,11 +39,12 @@ export class ElectiveComponent implements OnInit {
     private enrollmentAdministrationService: EnrollmentAdministrationService,
     private selectedUserService: SelectedUserService,
     private courseService: CourseService,
+    private enrollmentService: EnrollmentService,
     private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     const hardcodedStartTime = '2024-08-07';
-    const hardcodedEndTime = '2024-08-15';
+    const hardcodedEndTime = '2024-08-30';
 
     this.setEnrollmentPeriod(hardcodedStartTime, hardcodedEndTime);
 
@@ -62,9 +64,6 @@ export class ElectiveComponent implements OnInit {
           this.endTime = new Date(enrollmentPeriod[1]);
           this.cdr.detectChanges();
 
-          // if (!this.isEnrollmentPeriodActive()) {
-          //   this.loadStudentsEnrolledInCourses();
-          // }
         }
       },
       error: (err) => {
@@ -89,7 +88,7 @@ export class ElectiveComponent implements OnInit {
         this.courses=courses
         this.electiveCourses = this.courses.filter(course => course.category === 'elective');
         const applicationObservables = this.courses.map(course =>
-          this.courseService.getNrOfApplicationsForCourse(course.id).pipe(
+          this.enrollmentService.getNrOfApplicationsForCourse(course.id).pipe(
             map(count => ({ courseId: course.id, count }))
           )
         );
@@ -117,7 +116,7 @@ export class ElectiveComponent implements OnInit {
   }
 
   createEnrollment(studentId: number, courseId: number): void {
-    this.courseService.createEnrollment(studentId, courseId).subscribe({
+    this.enrollmentService.createEnrollment(studentId, courseId).subscribe({
       next: () => {
         console.log('Enrollment created successfully');
       },
