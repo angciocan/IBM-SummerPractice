@@ -20,12 +20,12 @@
 
   <div *ngIf="getSelectedUser() as selectedUser">
     <h3>Selected User: {{ selectedUser.name }}</h3>
-    <h4>User Role: {{ selectedUser.id }}</h4>
+    <h4>User Role: {{ selectedUser.role }}</h4>
     <div *ngIf="selectedUser.role === 'student'">
-      <h4>Enrolled + Pending Courses:</h4>
+      <h4>Enrollments</h4>
       <ul>
         <li *ngFor="let course of courses">
-          {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
+          {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} ( {{course.category}} )
         </li>
       </ul>
     </div>

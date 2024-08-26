@@ -51,6 +51,7 @@ export class UserComponent implements OnInit{
   selectUser(user: User): void {
     this.selectedUserService.setSelectedUser(user);
     this.loadUserCourses(user);
+    console.log(user)
   }
 
   clearSelectedUser(): void {
@@ -65,11 +66,9 @@ export class UserComponent implements OnInit{
   private loadUserCourses(user: User): void {
     if (user.role === 'student') {
       this.loadCoursesForStudent(user.id);
-      console.log(this.user)
     } else if (user.role === 'teacher') {
       this.courses = (user as Teacher).courses;
       console.log(this.courses)
-    } else {
     }
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import {Admin} from "../interfaces/admin";
 
 @Injectable({
@@ -13,6 +13,8 @@ export class AdministratorService {
   constructor(private http: HttpClient) { }
 
   getAllAdministrators(): Observable<Admin[]> {
-    return this.http.get<Admin[]>((`${this.apiUrl}/`));
+    return this.http.get<Admin[]>((`${this.apiUrl}/`)).pipe(
+      map(admins => admins.map(admin => ({ ...admin, role: 'admin' })))
+    );
   }
 }
