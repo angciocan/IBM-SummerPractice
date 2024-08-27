@@ -12,10 +12,13 @@ import com.example.ElectivCourses.converter.EnrollmentConverter;
 import com.example.ElectivCourses.converter.StudentConverter;
 import com.example.ElectivCourses.repository.CourseRepository;
 import com.example.ElectivCourses.repository.EnrollmentRepository;
+import com.example.ElectivCourses.repository.StudentRepository;
 import com.example.ElectivCourses.service.EnrollmentService;
 import com.example.ElectivCourses.service.EnrollmentAdministrationService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,39 +28,125 @@ import java.util.stream.Collectors;
 public class EnrollmentServiceImpl implements EnrollmentService {
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
     @Autowired
     private EnrollmentAdministrationService enrollmentAdministrationService;
 
     @Autowired
     private EnrollmentConverter enrollmentConverter;
 
-    @PostConstruct
-    public void fixEnrollments() {
-        System.out.println("Running fixEnrollments to ensure data consistency...");
+    public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
+        return enrollmentRepository.findAll().stream()
+                .anyMatch(enrollment ->
+                        enrollment.getCourse().getId().equals(courseId) &&
+                                enrollment.getStudent().getId().equals(studentId)
+                );
+    }
 
+
+    public void enrollStudents() {
+        System.out.println("Running enrollStudents to automatically enroll students in mandatory courses...");
+
+        List<Student> students = studentRepository.findAll();
+        Map<Long, Integer> courseSeatsToDecrement = new HashMap<>();
+        List<Enrollment> newEnrollments = new ArrayList<>();
+
+        System.out.println("Number of students: " + students.size());
+
+        for (Student student : students) {
+            int studyYear = student.getStudyYear();
+            System.out.println("Processing student ID: " + student.getId() + ", Study Year: " + studyYear);
+
+            int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(studyYear);
+            System.out.println("Maximum mandatory courses needed for this student: " + maxMandatoryCourses);
+
+            List<Course> coursesByStudyYear = courseRepository.findByStudyYear(studyYear);
+
+            List<Course> mandatoryCourses = coursesByStudyYear.stream()
+                    .filter(course -> course.getCategory().equals("mandatory"))
+                    .toList();
+
+            System.out.println("Found " + mandatoryCourses.size() + " mandatory courses for study year " + studyYear);
+
+            if (mandatoryCourses.size() < maxMandatoryCourses) {
+                System.out.println("Not enough mandatory courses available for student ID: " + student.getId());
+                continue;
+            }
+
+
+            for (int i = 0; i < maxMandatoryCourses; i++) {
+                Course course = mandatoryCourses.get(i);
+
+
+                boolean alreadyEnrolled = existsByCourseIdAndStudentId(course.getId(), student.getId());
+                System.out.println("Checking enrollment for student ID: " + student.getId() + ", Course ID: " + course.getId() + " - Already Enrolled: " + alreadyEnrolled);
+
+                if (!alreadyEnrolled) {
+                    Enrollment newEnrollment = new Enrollment();
+                    newEnrollment.setCourse(course);
+                    newEnrollment.setStudent(student);
+                    newEnrollment.setStatus(EnrollmentStatus.ENROLLED);
+                    newEnrollments.add(newEnrollment);
+
+
+                    courseSeatsToDecrement.put(course.getId(), courseSeatsToDecrement.getOrDefault(course.getId(), 0) + 1);
+                    System.out.println("Enrolling student ID: " + student.getId() + " in course ID: " + course.getId());
+                } else {
+                    System.out.println("Student ID: " + student.getId() + " is already enrolled in course ID: " + course.getId());
+                }
+            }
+        }
+
+        System.out.println("New enrollments to be saved: " + newEnrollments.size());
+
+        for (Map.Entry<Long, Integer> entry : courseSeatsToDecrement.entrySet()) {
+            Course course = courseRepository.findById(entry.getKey())
+                    .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + entry.getKey()));
+
+            int seatsToDecrement = entry.getValue();
+            System.out.println("Adjusting seats for course ID: " + course.getId() + ". Seats to decrement: " + seatsToDecrement);
+
+            if (course.getMaxStudents() < seatsToDecrement) {
+                throw new IllegalStateException("Course with ID: " + course.getId() + " does not have enough seats available.");
+            }
+
+            course.setMaxStudents(course.getMaxStudents() - seatsToDecrement);
+            courseRepository.save(course);
+            System.out.println("Updated course ID: " + course.getId() + " - New available seats: " + course.getMaxStudents());
+        }
+
+        enrollmentRepository.saveAll(newEnrollments);
+        System.out.println("Saved all new enrollments.");
+    }
+
+
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void fixEnrollments() {
         List<Enrollment> enrollments = enrollmentRepository.findAll();
+
         Map<Long, Integer> courseSeatsToDecrement = new HashMap<>();
 
         for (Enrollment enrollment : enrollments) {
             Course course = enrollment.getCourse();
             Student student = enrollment.getStudent();
 
-            // Check if course is mandatory and ensure status is set to ENROLLED
             if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
                 enrollment.setStatus(EnrollmentStatus.ENROLLED);
 
-                // Track the courses for which maxStudents need to be decremented
                 courseSeatsToDecrement.put(course.getId(), courseSeatsToDecrement.getOrDefault(course.getId(), 0) + 1);
             }
 
-            // Validate that the student's study year matches the course's study year
             if (student.getStudyYear() != course.getStudyYear()) {
                 throw new IllegalStateException("Study year mismatch for student ID: " + student.getId() + " and course ID: " + course.getId());
             }
 
-            // Validate that the student has not exceeded the max number of mandatory courses
             int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(student.getStudyYear());
             long currentMandatoryCourses = enrollments.stream()
                     .filter(e -> e.getStudent().getId().equals(student.getId()) && e.getCourse().getCategory().equals("mandatory"))
@@ -68,7 +157,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             }
         }
 
-        // Decrement the maxStudents count for the affected courses
         for (Map.Entry<Long, Integer> entry : courseSeatsToDecrement.entrySet()) {
             Course course = courseRepository.findById(entry.getKey())
                     .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + entry.getKey()));
@@ -82,8 +170,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             courseRepository.save(course);
         }
 
-        // Save all updated enrollments
+        enrollStudents();
+
         enrollmentRepository.saveAll(enrollments);
+
     }
 
     @Override
@@ -125,22 +215,17 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             return EnrollmentConverter.toDTO(alreadyExists.get());
         }
 
-        // Fetch the course entity to update maxStudents
         Course course = courseRepository.findById(newEnrollment.getCourse().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
-        // Check if there is space left in the course
         if (course.getMaxStudents() <= 0) {
             throw new IllegalArgumentException("No more spaces available in the course.");
         }
 
-        // Decrease the maxStudents by 1
         course.setMaxStudents(course.getMaxStudents() - 1);
 
-        // Save the updated course
         courseRepository.save(course);
 
-        // Save the new enrollment
         newEnrollment = enrollmentRepository.save(newEnrollment);
 
         return EnrollmentConverter.toDTO(newEnrollment);
@@ -148,7 +233,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<EnrollmentDTO> getAllEnrollments() {
-        fixEnrollments();
         return enrollmentRepository.findAll().stream().map(EnrollmentConverter::toDTO).collect(Collectors.toList());
     }
 
@@ -159,12 +243,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId))
                 .findAny();
 
-
         existentEnrollment.ifPresent(enrollment -> enrollmentRepository.delete(enrollment));
-
-
-
-//        existentEnrollment.ifPresent(enrollment -> enrollmentRepository.delete(enrollment));
 
     }
 

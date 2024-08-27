@@ -15,4 +15,6 @@ public interface EnrollmentService {
     List<StudentDTO> getStudentsEnrolledToCourse(Long courseId);
     List<CourseDTO> getCoursesForStudent(Long studentId);
     void fixEnrollments();
+    void enrollStudents();
+    boolean existsByCourseIdAndStudentId(Long courseId,Long studentId);
 }

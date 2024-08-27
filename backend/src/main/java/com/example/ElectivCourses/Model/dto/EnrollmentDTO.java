@@ -10,8 +10,6 @@ public class EnrollmentDTO {
 
     public EnrollmentDTO() {}
 
-
-
     public EnrollmentDTO(Long id, Long studentId, Long courseId, EnrollmentStatus status) {
         this.id=id;
         this.studentId = studentId;

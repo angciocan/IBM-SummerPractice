@@ -5,7 +5,7 @@ import {Course} from "../../interfaces/course";
 import {SelectedUserService} from "../../services/selected-user.service";
 import {Student} from "../../interfaces/student";
 import {User} from "../../interfaces/user";
-import {forkJoin, map, switchMap} from "rxjs";
+import {forkJoin, interval, map, switchMap} from "rxjs";
 import {CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag} from '@angular/cdk/drag-drop';
 import {CourseService} from "../../services/course.service";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
@@ -79,30 +79,36 @@ export class ElectiveComponent implements OnInit {
       }
     });
 
-    this.cdr.detectChanges();
+    // interval(5000).subscribe(() => {
+    //   if (this.selectedUser && ((this.selectedUser as Student).role === 'student')) {
+    //     this.loadCoursesSameYearForStudent((this.selectedUser as Student).studyYear);
+    //   }
+    // });
   }
 
-  private loadCoursesSameYearForStudent(studyYear: number): void {
-    this.courseService.getCoursesByStudyYear(studyYear).pipe(
-      switchMap(courses => {
-        this.courses=courses
-        this.electiveCourses = this.courses.filter(course => course.category === 'elective');
-        const applicationObservables = this.courses.map(course =>
-          this.enrollmentService.getNrOfApplicationsForCourse(course.id).pipe(
-            map(count => ({ courseId: course.id, count }))
-          )
-        );
+  private updateApplicationCounts(): void {
+    const applicationObservables = this.courses.map(course =>
+      this.enrollmentService.getNrOfApplicationsForCourse(course.id).pipe(
+        map(count => ({ courseId: course.id, count }))
+      )
+    );
 
-        return forkJoin(applicationObservables);
-      })
-    ).subscribe(applicationCounts => {
+    forkJoin(applicationObservables).subscribe(applicationCounts => {
       applicationCounts.forEach(appCount => {
         this.courseApplicationCounts[appCount.courseId] = appCount.count;
       });
-      // console.log(this.electiveCourses)
-
+      this.cdr.detectChanges();
     });
   }
+
+  private loadCoursesSameYearForStudent(studyYear: number): void {
+    this.courseService.getCoursesByStudyYear(studyYear).subscribe(courses => {
+      this.courses = courses;
+      this.electiveCourses = this.courses.filter(course => course.category === 'elective');
+      this.updateApplicationCounts();
+    });
+  }
+
 
   setEnrollmentPeriod(startTime: string, endTime: string): void {
     this.enrollmentAdministrationService.setEnrollmentPeriod(startTime, endTime).subscribe({
@@ -131,16 +137,13 @@ export class ElectiveComponent implements OnInit {
       const studentId = (this.selectedUser as Student).id;
       const studyYear = (this.selectedUser as Student).studyYear;
 
-      // Filter courses based on the selected user's study year
       const eligibleCourses = this.electiveCourses.filter(course => course.studyYear === studyYear);
 
-      // Check if there are enough courses available for enrollment
       if (eligibleCourses.length < studyYear) {
         console.warn('Not enough eligible courses available for the student\'s study year');
         return;
       }
 
-      // Enroll the student in the required number of courses
       for (let i = 0; i < studyYear; i++) {
         this.createEnrollment(studentId, eligibleCourses[i].id);
       }
