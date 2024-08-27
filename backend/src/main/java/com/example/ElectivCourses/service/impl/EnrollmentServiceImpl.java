@@ -254,6 +254,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public List<StudentDTO> getStudentsPendingEnrollmentToCourse(Long courseId) {
+        return enrollmentRepository.findAll().stream()
+                .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.PENDING)
+                .map(enrollment -> StudentConverter.toDTO(enrollment.getStudent())).collect(Collectors.toList());
+    }
+
+    @Override
     public List<StudentDTO> getStudentsEnrolledToCourse(Long courseId) {
         return enrollmentRepository.findAll().stream()
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.ENROLLED)

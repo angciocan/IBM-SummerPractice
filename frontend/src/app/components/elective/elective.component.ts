@@ -33,6 +33,7 @@ export class ElectiveComponent implements OnInit {
   protected selectedUser: User | null = null;
   private courses: Course[] = [];
   courseApplicationCounts: { [courseId: number]: number } = {};
+  studentsEnrolled: { [courseId: number]: Student[] } = {};
 
 
   constructor(
@@ -105,15 +106,33 @@ export class ElectiveComponent implements OnInit {
     this.courseService.getCoursesByStudyYear(studyYear).subscribe(courses => {
       this.courses = courses;
       this.electiveCourses = this.courses.filter(course => course.category === 'elective');
+      this.loadStudentsEnrolledInCourses();
       this.updateApplicationCounts();
     });
   }
+
+  private loadStudentsEnrolledInCourses(): void {
+    const courseObservables = this.electiveCourses.map(course =>
+      this.enrollmentService.getStudentPendingEnrollmentToCourse(course.id).pipe(
+        map(students => ({ courseId: course.id, students }))
+      )
+    );
+
+    forkJoin(courseObservables).subscribe(courseStudents => {
+      courseStudents.forEach(({ courseId, students }) => {
+        this.studentsEnrolled[courseId] = students;
+        console.log(this.studentsEnrolled)
+      });
+      this.cdr.detectChanges();
+    });
+  }
+
 
 
   setEnrollmentPeriod(startTime: string, endTime: string): void {
     this.enrollmentAdministrationService.setEnrollmentPeriod(startTime, endTime).subscribe({
       next: () => {
-        // console.log('Enrollment period set successfully');
+        console.log('Enrollment period set successfully');
       },
       error: (err) => {
         console.error('Error setting enrollment period:', err);
@@ -167,21 +186,5 @@ export class ElectiveComponent implements OnInit {
     }
     return false
   }
-
-  // private loadStudentsEnrolledInCourses(): void {
-  //   const courseObservables = this.electiveCourses.map(course =>
-  //     this.courseService.getStudentsEnrolledToCourse(course.id).pipe(
-  //       map(students => ({ courseId: course.id, students }))
-  //     )
-  //   );
-  //
-  //   forkJoin(courseObservables).subscribe(courseStudents => {
-  //     courseStudents.forEach(({ courseId, students }) => {
-  //       this.studentsEnrolled[courseId] = students;
-  //
-  //     });
-  //     this.cdr.detectChanges();
-  //   });
-  // }
 
 }

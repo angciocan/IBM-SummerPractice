@@ -18,6 +18,9 @@ export class EnrollmentService {
   getStudentsEnrolledToCourse(courseId:number): Observable<Student[]>{
     return this.http.get<Student[]>(`${this.apiUrl}/students-enrolled-to-course/${courseId}`)
   }
+  getStudentPendingEnrollmentToCourse(courseId:number): Observable<Student[]>{
+    return this.http.get<Student[]>(`${this.apiUrl}/students-pending-enrollment-to-course/${courseId}`)
+  }
 
   createEnrollment(studentId: number, courseId: number): Observable<void> {
     const body = { studentId, courseId };

@@ -47,6 +47,11 @@ public class EnrollmentApi {
         List<StudentDTO> students = enrollmentService.getStudentsEnrolledToCourse(courseId);
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
+    @GetMapping("students-pending-enrollment-to-course/{courseId}")
+    public ResponseEntity<List<StudentDTO>> getStudentsPendingEnrollmentToCourse(@PathVariable("courseId") Long courseId) {
+        List<StudentDTO> students = enrollmentService.getStudentsPendingEnrollmentToCourse(courseId);
+        return new ResponseEntity<>(students, HttpStatus.OK);
+    }
     @GetMapping("courses-of-the-student/{studentId}")
     public ResponseEntity<List<CourseDTO>> getCoursesForStudent(@PathVariable Long studentId) {
         List<CourseDTO> courses = enrollmentService.getCoursesForStudent(studentId);

@@ -25,6 +25,12 @@ values (4,23,2,'17:00',1,'mandatory','bazele programarii');
 insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name)
 values (4,23,3,'17:00',1,'mandatory','programare web');
 
+insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name)
+values (4,23,3,'17:00',1,'mandatory','sisteme de operare');
+
+insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name)
+values (4,23,3,'17:00',1,'mandatory','retele de calculatoare');
+
 insert into course(day_of_week, max_students, study_year, time, teacher_id, category, course_name)
 values (2, 25, 4, '10:00', 1, 'mandatory', 'advanced programming');
 
