@@ -53,6 +53,8 @@ values (2,23,3,'17:00',1,'elective','bazele programarii 2');
 insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name)
 values (3,23,3,'17:00',1,'elective','programare web 2');
 
+insert into course(day_of_week,max_students,study_year,time,teacher_id,category,course_name)
+values (3,23,3,'17:00',1,'elective','programare web 3');
 
 -- Insert enrollment administration data
 insert into enrollment_administration(nr_of_mandatory_courses,nr_of_elective_courses, study_year)

@@ -50,7 +50,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
 
-    public void enrollStudents() {
+    public void enrollStudentsToMandatoryCourses() {
         System.out.println("Running enrollStudents to automatically enroll students in mandatory courses...");
 
         List<Student> students = studentRepository.findAll();
@@ -170,7 +170,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             courseRepository.save(course);
         }
 
-        enrollStudents();
+        enrollStudentsToMandatoryCourses();
 
         enrollmentRepository.saveAll(enrollments);
 
