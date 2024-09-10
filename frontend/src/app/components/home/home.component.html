@@ -1,28 +1,62 @@
 <div *ngIf="selectedUser">
   <h3>Currently Selected User</h3>
   <p>Name: {{ selectedUser.name | replaceNullWithText: "No student chosen" }}</p>
-  <p *ngIf="isStudent(selectedUser)">Year of study: {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }}</p>
-  <p *ngIf="isStudent(selectedUser)">You need to pick {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }} courses</p>
-  <div *ngIf="selectedUser.role === 'student'">
+
+  <!-- Student Section -->
+  <div *ngIf="isStudent(selectedUser)">
+    <p>Year of study: {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }}</p>
+    <p>You need to pick {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }} courses</p>
+
     <h4>Mandatory Courses</h4>
     <ul>
       <li *ngFor="let course of mandatoryCourses">
         {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
       </li>
     </ul>
+
     <h4>Elective Courses</h4>
     <ul>
       <li *ngFor="let course of electiveCourses">
         {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }} - Applications: {{ courseApplicationCounts[course.id] || 0 }}
       </li>
     </ul>
-
   </div>
+
+  <!-- Teacher Section -->
   <div *ngIf="selectedUser.role === 'teacher'">
     <h4>Teaching Courses:</h4>
     <ul>
       <li *ngFor="let course of courses">
         {{ course.courseName }} - {{ course.dayOfWeek }} at {{ course.time }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Admin Section with Filters -->
+  <div *ngIf="selectedUser.role === 'admin'">
+    <h4>Admin Commands:</h4>
+    <h2>Students</h2>
+
+    <!-- Filters -->
+    <label for="yearFilter">Filter by Year:</label>
+    <select id="yearFilter" (change)="onYearFilter($event)">
+      <option value="">All Years</option>
+      <option *ngFor="let year of uniqueStudyYears" [value]="year">{{ year }}</option>
+    </select>
+
+    <label for="facultyFilter">Filter by Faculty Section:</label>
+    <select id="facultyFilter" (change)="onFacultyFilter($event)">
+      <option value="">All Sections</option>
+      <option *ngFor="let section of uniqueFacultySections" [value]="section">{{ section }}</option>
+    </select>
+
+    <label for="gradeFilter">Filter by Minimum Grade:</label>
+    <input type="number" id="gradeFilter" (input)="onGradeFilter($event)" />
+
+    <!-- Filtered Students List -->
+    <ul>
+      <li *ngFor="let student of filteredStudents">
+        {{ student.name }} - Year of study: {{student.studyYear}} - Grade: {{student.grade}} - Section {{student.facultySection}}
       </li>
     </ul>
   </div>
