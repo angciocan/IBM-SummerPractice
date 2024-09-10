@@ -9,6 +9,7 @@ public interface EnrollmentPeriodRepository extends JpaRepository<EnrollmentPeri
     default EnrollmentPeriod findOrCreateSingleton(){
         return findById(1L).orElseGet(() ->{
             EnrollmentPeriod newPeriod = new EnrollmentPeriod();
+            newPeriod.setId(1L);
             newPeriod.setOpen(false);
             return save(newPeriod);
         });

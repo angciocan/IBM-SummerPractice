@@ -4,7 +4,6 @@ import com.example.ElectivCourses.Model.entity.EnrollmentPeriod;
 import com.example.ElectivCourses.repository.EnrollmentPeriodRepository;
 import com.example.ElectivCourses.service.EnrollmentPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +24,6 @@ public class EnrollmentPeriodServiceImpl implements EnrollmentPeriodService {
         EnrollmentPeriod period = enrollmentPeriodRepository.findOrCreateSingleton();
         period.setOpen(false);
         enrollmentPeriodRepository.save(period);
-
     }
 
     @Override
