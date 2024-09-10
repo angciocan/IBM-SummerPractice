@@ -1,0 +1,46 @@
+package com.example.ElectivCourses.controller;
+
+
+import com.example.ElectivCourses.service.EnrollmentPeriodService;
+import com.example.ElectivCourses.service.impl.EnrollmentManagementServiceImpl;
+import com.example.ElectivCourses.service.impl.EnrollmentPeriodServiceImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("enrollmentPeriod")
+@CrossOrigin("http://localhost:4200")
+public class EnrollmentPeriodApi {
+
+    EnrollmentPeriodService enrollmentPeriodService;
+    @PostMapping("/open")
+    public ResponseEntity<String> openEnrollmentPeriod() {
+        try {
+            enrollmentPeriodService.openEnrollmentPeriod();
+            return ResponseEntity.ok("Enrollment period opened successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while opening the enrollment period.");
+        }
+    }
+
+    @PostMapping("/close")
+    public ResponseEntity<String> closeEnrollmentPeriod() {
+        try {
+            enrollmentPeriodService.closeEnrollmentPeriod();
+            return ResponseEntity.ok("Enrollment period closed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while closing the enrollment period.");
+        }
+    }
+
+    @GetMapping("/is-open")
+    public ResponseEntity<Boolean> isEnrollmentPeriodOpen() {
+        try {
+            boolean isOpen = enrollmentPeriodService.isEnrollmentPeriodOpen();
+            return ResponseEntity.ok(isOpen);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(false);
+        }
+    }
+
+}

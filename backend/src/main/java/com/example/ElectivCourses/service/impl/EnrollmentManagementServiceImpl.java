@@ -6,6 +6,7 @@ import com.example.ElectivCourses.Model.entity.EnrollmentStatus;
 import com.example.ElectivCourses.repository.CourseRepository;
 import com.example.ElectivCourses.repository.EnrollmentManagementRepository;
 import com.example.ElectivCourses.repository.EnrollmentRepository;
+import com.example.ElectivCourses.service.EnrollmentManagementService;
 import com.example.ElectivCourses.service.EnrollmentPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class EnrollmentManagementServiceImpl {
+public class EnrollmentManagementServiceImpl implements EnrollmentManagementService {
     @Autowired
     private EnrollmentRepository enrollmentRepository;
     @Autowired
@@ -29,7 +30,7 @@ public class EnrollmentManagementServiceImpl {
     private EnrollmentPeriodService enrollmentPeriodService;
 
     @Transactional
-    public void processPendingEnrollment(){
+    public void processPendingEnrollments(){
         if(enrollmentPeriodService.isEnrollmentPeriodOpen())
         {
             throw new IllegalStateException("Enrollment period is open");
