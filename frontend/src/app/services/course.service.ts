@@ -24,4 +24,18 @@ export class CourseService {
     return this.http.get<Course[]>(`${this.apiUrl}/by-category`, { params });
   }
 
+  createCourse(course: Course): Observable<Course> {
+    return this.http.post<Course>(`${this.apiUrl}/create`, course);
+  }
+
+  updateCourse(id: number, course: Course): Observable<Course> {
+    let params = new HttpParams().set('id', id.toString());
+    return this.http.post<Course>(`${this.apiUrl}/update`, course, { params });
+  }
+
+  deleteCourse(id: number): Observable<void> {
+    let params = new HttpParams().set('id', id.toString());
+    return this.http.delete<void>(`${this.apiUrl}/delete`, { params });
+  }
+
 }

@@ -8,13 +8,14 @@ import { Course } from "../../interfaces/course";
 import { Student } from "../../interfaces/student";
 import { Teacher } from "../../interfaces/teacher";
 import { CourseService } from "../../services/course.service";
-import { forkJoin, map, switchMap } from "rxjs";
 import { EnrollmentService } from "../../services/enrollment.service";
+import {forkJoin, map, switchMap} from "rxjs";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ReplaceNullWithTextPipe],
+  imports: [CommonModule, ReplaceNullWithTextPipe, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
@@ -35,6 +36,18 @@ export class HomeComponent implements OnInit {
   // For dropdowns
   uniqueStudyYears: number[] = [];
   uniqueFacultySections: string[] = [];
+
+  // New course model for the form
+  newCourse: Course = {
+    id: 0,
+    courseName: '',
+    maxStudents: 0,
+    studyYear: 0,
+    category: '',
+    dayOfWeek: '',
+    time: '',
+    teacherDTO: null
+  };
 
   constructor(
     private selectedUserService: SelectedUserService,
@@ -64,6 +77,29 @@ export class HomeComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  // Method to create a new course
+  onCreateCourse(): void {
+    this.courseService.createCourse(this.newCourse).subscribe(
+      createdCourse => {
+        console.log('Course created successfully:', createdCourse);
+        // Optionally, reset the form or update the UI
+        this.newCourse = {
+          id: 0,
+          courseName: '',
+          maxStudents: 0,
+          studyYear: 0,
+          category: '',
+          dayOfWeek: '',
+          time: '',
+          teacherDTO: null
+        };
+      },
+      error => {
+        console.error('Error creating course:', error);
+      }
+    );
+  }
+
   onYearFilter(event: any): void {
     const value = event.target.value;
     this.selectedYear = value ? parseInt(value, 10) : null;
@@ -82,9 +118,6 @@ export class HomeComponent implements OnInit {
     this.applyFilters();
   }
 
-
-
-
   applyFilters(): void {
     this.filteredStudents = this.students.filter(student => {
       const matchesYear = this.selectedYear ? student.studyYear === this.selectedYear : true;
@@ -101,6 +134,7 @@ export class HomeComponent implements OnInit {
 
   private loadCoursesSameYearForStudent(studyYear: number): void {
     this.courseService.getCoursesByStudyYear(studyYear).pipe(
+
       switchMap(courses => {
         this.courses = courses;
         this.mandatoryCourses = this.courses.filter(course => course.category === 'mandatory');

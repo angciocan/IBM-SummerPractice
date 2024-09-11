@@ -8,6 +8,6 @@ export interface Course {
   category: string;
   dayOfWeek: string;
   time: string;
-  teacherDTO: Teacher;
+  teacherDTO: Teacher | null;
 }
 
