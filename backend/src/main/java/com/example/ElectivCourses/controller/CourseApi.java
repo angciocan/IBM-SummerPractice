@@ -37,4 +37,17 @@ public class CourseApi {
     public List<CourseDTO> getCoursesByStudentIdApplications(@RequestParam Long id) {
         return courseService.getCoursesByStudentIdApplications(id);
     }
+    @PostMapping("/create")
+    public CourseDTO createCourse(@RequestBody Course course) {
+        return courseService.createCourse(course);
+    }
+    @PostMapping("/update")
+    public CourseDTO updateCourse(@RequestParam Long id, @RequestBody Course course) {
+        return courseService.updateCourse(id, course);
+    }
+    @DeleteMapping("/delete")
+    public void deleteCourse(@RequestParam Long id) {
+        courseService.deleteCourse(id);
+    }
+
 }

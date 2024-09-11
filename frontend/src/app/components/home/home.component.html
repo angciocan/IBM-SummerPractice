@@ -2,7 +2,6 @@
   <h3>Currently Selected User</h3>
   <p>Name: {{ selectedUser.name | replaceNullWithText: "No student chosen" }}</p>
 
-  <!-- Student Section -->
   <div *ngIf="isStudent(selectedUser)">
     <p>Year of study: {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }}</p>
     <p>You need to pick {{ selectedUser.studyYear | replaceNullWithText: "No student chosen" }} courses</p>
@@ -22,7 +21,6 @@
     </ul>
   </div>
 
-  <!-- Teacher Section -->
   <div *ngIf="selectedUser.role === 'teacher'">
     <h4>Teaching Courses:</h4>
     <ul>
@@ -32,12 +30,10 @@
     </ul>
   </div>
 
-  <!-- Admin Section with Filters -->
   <div *ngIf="selectedUser.role === 'admin'">
     <h4>Admin Commands:</h4>
     <h2>Students</h2>
 
-    <!-- Filters -->
     <label for="yearFilter">Filter by Year:</label>
     <select id="yearFilter" (change)="onYearFilter($event)">
       <option value="">All Years</option>
@@ -53,7 +49,6 @@
     <label for="gradeFilter">Filter by Minimum Grade:</label>
     <input type="number" id="gradeFilter" (input)="onGradeFilter($event)" />
 
-    <!-- Filtered Students List -->
     <ul>
       <li *ngFor="let student of filteredStudents">
         {{ student.name }} - Year of study: {{student.studyYear}} - Grade: {{student.grade}} - Section {{student.facultySection}}
