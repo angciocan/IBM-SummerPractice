@@ -110,8 +110,12 @@
 
       <button type="submit">Create Course</button>
     </form>
+    <!-- Dropdown or list to select course by ID -->
+    <select (change)="getCourseById($any($event.target).value)">
+      <option *ngFor="let course of allCourses" [value]="course.id">{{ course.courseName }}</option>
+    </select>
 
-    <h2>Update Course</h2>
+    <!-- Form to update the course -->
     <form *ngIf="selectedCourse" (ngSubmit)="onUpdateCourse()">
       <label for="updateCourseName">Course Name:</label>
       <input type="text" id="updateCourseName" [(ngModel)]="selectedCourse.courseName" name="updateCourseName" required />

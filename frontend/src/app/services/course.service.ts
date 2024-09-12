@@ -24,9 +24,9 @@ export class CourseService {
     return this.http.get<Course[]>(`${this.apiUrl}/by-category`, { params });
   }
 
-  getCourseById(id: Number): Observable<Course[]> {
+  getCourseById(id: Number): Observable<Course> {
     let params = new HttpParams().set('id', id.toString());
-    return this.http.get<Course[]>(`${this.apiUrl}/by-id`, { params });
+    return this.http.get<Course>(`${this.apiUrl}/by-id`, { params });
   }
 
 

@@ -144,6 +144,24 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  getCourseById(courseId: any): void {
+    const id = Number(courseId); // Convert the string value to a number
+    if (!id) {
+      console.error('Invalid course ID');
+      return;
+    }
+
+    this.courseService.getCourseById(id).subscribe(
+      course => {
+        this.selectedCourse = course;
+        console.log('Course loaded:', this.selectedCourse);
+      },
+      error => {
+        console.error('Error fetching course:', error);
+      }
+    );
+  }
+
 
   onYearFilter(event: any): void {
     const value = event.target.value;
