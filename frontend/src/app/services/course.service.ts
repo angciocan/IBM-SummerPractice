@@ -24,6 +24,13 @@ export class CourseService {
     return this.http.get<Course[]>(`${this.apiUrl}/by-category`, { params });
   }
 
+  getCourseById(id: Number): Observable<Course[]> {
+    let params = new HttpParams().set('id', id.toString());
+    return this.http.get<Course[]>(`${this.apiUrl}/by-id`, { params });
+  }
+
+
+
   createCourse(course: Course): Observable<Course> {
     return this.http.post<Course>(`${this.apiUrl}/create`, course);
   }

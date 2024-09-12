@@ -54,6 +54,30 @@
       </li>
     </ul>
 
+    <li *ngFor="let course of allCourses">
+      <div>
+        <strong>Id:</strong> {{ course.id }} -
+        <strong>Name:</strong> {{ course.courseName }} -
+        <strong>Max Students:</strong> {{ course.maxStudents }} -
+        <strong>Year of Study:</strong> {{ course.studyYear }} -
+        <strong>Category:</strong> {{ course.category }} -
+        <strong>Day:</strong> {{ course.dayOfWeek }} -
+        <strong>Time:</strong> {{ course.time }}
+        <br />
+
+        <button (click)="getStudentsEnrolledToCourse(course.id)">Show Enrolled Students</button>
+
+        <ul *ngIf="studentsEnrolledToCoursesMap[course.id] && studentsEnrolledToCoursesMap[course.id].length > 0">
+          <li *ngFor="let student of studentsEnrolledToCoursesMap[course.id]">
+            {{ student.name }} - Year: {{ student.studyYear }} - Section: {{ student.facultySection }}
+          </li>
+        </ul>
+        <p *ngIf="studentsEnrolledToCoursesMap[course.id] && studentsEnrolledToCoursesMap[course.id].length === 0">
+          No students enrolled in this course.
+        </p>
+      </div>
+    </li>
+
     <h2>Create a New Course</h2>
 
     <form (ngSubmit)="onCreateCourse()">
@@ -86,5 +110,40 @@
 
       <button type="submit">Create Course</button>
     </form>
+
+    <h2>Update Course</h2>
+    <form *ngIf="selectedCourse" (ngSubmit)="onUpdateCourse()">
+      <label for="updateCourseName">Course Name:</label>
+      <input type="text" id="updateCourseName" [(ngModel)]="selectedCourse.courseName" name="updateCourseName" required />
+
+      <label for="updateMaxStudents">Max Students:</label>
+      <input type="number" id="updateMaxStudents" [(ngModel)]="selectedCourse.maxStudents" name="updateMaxStudents" required />
+
+      <label for="updateStudyYear">Study Year:</label>
+      <input type="number" id="updateStudyYear" [(ngModel)]="selectedCourse.studyYear" name="updateStudyYear" required />
+
+      <label for="updateCategory">Category:</label>
+      <select id="updateCategory" [(ngModel)]="selectedCourse.category" name="updateCategory" required>
+        <option value="mandatory">Mandatory</option>
+        <option value="elective">Elective</option>
+      </select>
+
+      <label for="updateDayOfWeek">Day of Week:</label>
+      <select id="updateDayOfWeek" [(ngModel)]="selectedCourse.dayOfWeek" name="updateDayOfWeek" required>
+        <option value="MONDAY">Monday</option>
+        <option value="TUESDAY">Tuesday</option>
+        <option value="WEDNESDAY">Wednesday</option>
+        <option value="THURSDAY">Thursday</option>
+        <option value="FRIDAY">Friday</option>
+      </select>
+
+      <label for="updateTime">Time:</label>
+      <input type="time" id="updateTime" [(ngModel)]="selectedCourse.time" name="updateTime" required />
+
+      <button type="submit">Update Course</button>
+    </form>
+
+
+
   </div>
 </div>

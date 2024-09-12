@@ -21,23 +21,22 @@ import {FormsModule} from "@angular/forms";
 })
 export class HomeComponent implements OnInit {
   selectedUser: User | null = null;
-  courses: Course[] = [];
   students: Student[] = [];
   filteredStudents: Student[] = [];
+  studentsEnrolledToCoursesMap: { [courseId: number]: Student[] } = {};
+  allCourses: Course[] = [];
+  courses: Course[] = [];
   mandatoryCourses: Course[] = [];
   electiveCourses: Course[] = [];
   courseApplicationCounts: { [courseId: number]: number } = {};
 
-  // Filter values
   selectedYear: number | null = null;
   selectedFaculty: string | null = null;
   minGrade: number | null = null;
 
-  // For dropdowns
   uniqueStudyYears: number[] = [];
   uniqueFacultySections: string[] = [];
 
-  // New course model for the form
   newCourse: Course = {
     id: 0,
     courseName: '',
@@ -48,6 +47,7 @@ export class HomeComponent implements OnInit {
     time: '',
     teacherDTO: null
   };
+  protected selectedCourse: Course | null  = null;
 
   constructor(
     private selectedUserService: SelectedUserService,
@@ -62,9 +62,12 @@ export class HomeComponent implements OnInit {
       this.selectedUser = user;
       this.studentService.getAllStudents().subscribe(data => {
         this.students = data;
-        this.filteredStudents = data; // Initially, all students are displayed
-        this.setUniqueFilters(); // Set unique study years and faculty sections
+        this.filteredStudents = data;
+        this.setUniqueFilters();
       });
+      this.courseService.getAllCourses().subscribe(courses => {
+        this.allCourses = courses;
+      })
 
       if (this.selectedUser && this.isStudent(this.selectedUser)) {
         this.loadCoursesSameYearForStudent((this.selectedUser as Student).studyYear);
@@ -77,12 +80,13 @@ export class HomeComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+
+
   // Method to create a new course
   onCreateCourse(): void {
     this.courseService.createCourse(this.newCourse).subscribe(
       createdCourse => {
         console.log('Course created successfully:', createdCourse);
-        // Optionally, reset the form or update the UI
         this.newCourse = {
           id: 0,
           courseName: '',
@@ -99,6 +103,47 @@ export class HomeComponent implements OnInit {
       }
     );
   }
+
+  getAllCourses(): void {
+    this.courseService.getAllCourses().subscribe(
+      courses => {
+        this.allCourses = courses;
+        console.log('Courses retrieved successfully:', this.allCourses);
+      },
+      error => {
+        console.error('Error retrieving courses:', error);
+      }
+    );
+  }
+
+  getStudentsEnrolledToCourse(courseId: number): void {
+    this.enrollmentService.getStudentsEnrolledToCourse(courseId).subscribe(
+      students => {
+        this.studentsEnrolledToCoursesMap[courseId] = students;
+        console.log(`Students enrolled for course ${courseId}:`, students);
+      },
+      error => {
+        console.error('Error getting students for course:', error);
+      }
+    );
+  }
+
+  onUpdateCourse(): void {
+    if (this.selectedCourse && this.selectedCourse.id) {
+      this.courseService.updateCourse(this.selectedCourse.id, this.selectedCourse).subscribe(
+        updatedCourse => {
+          console.log('Course updated successfully:', updatedCourse);
+          this.selectedCourse = null;
+        },
+        error => {
+          console.error('Error updating course:', error);
+        }
+      );
+    } else {
+      console.error('Selected course or course ID is missing');
+    }
+  }
+
 
   onYearFilter(event: any): void {
     const value = event.target.value;
