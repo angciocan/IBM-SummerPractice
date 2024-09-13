@@ -48,7 +48,7 @@ public class Course {
     @Column
     private LocalTime time;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Enrollment> enrollments;
 
     @ManyToOne

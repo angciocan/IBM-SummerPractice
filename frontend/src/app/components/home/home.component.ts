@@ -162,6 +162,23 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  onDeleteCourse(): void {
+    if (this.selectedCourse && this.selectedCourse.id) {
+      this.courseService.deleteCourse(this.selectedCourse.id).subscribe(
+        () => {
+          console.log('Course deleted successfully');
+          this.allCourses = this.allCourses.filter(course => course.id !== this.selectedCourse?.id);
+          this.selectedCourse = null;
+        },
+        error => {
+          console.error('Error deleting course:', error);
+        }
+      );
+    } else {
+      console.error('Selected course or course ID is missing');
+    }
+  }
+
 
   onYearFilter(event: any): void {
     const value = event.target.value;
