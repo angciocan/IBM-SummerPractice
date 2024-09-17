@@ -15,7 +15,6 @@ import com.example.ElectivCourses.repository.EnrollmentRepository;
 import com.example.ElectivCourses.repository.StudentRepository;
 import com.example.ElectivCourses.service.EnrollmentService;
 import com.example.ElectivCourses.service.EnrollmentAdministrationService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

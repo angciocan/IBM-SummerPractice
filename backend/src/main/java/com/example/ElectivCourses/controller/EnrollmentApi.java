@@ -2,9 +2,7 @@ package com.example.ElectivCourses.controller;
 
 import com.example.ElectivCourses.Model.dto.CourseDTO;
 import com.example.ElectivCourses.Model.dto.StudentDTO;
-import com.example.ElectivCourses.Model.entity.Enrollment;
 import com.example.ElectivCourses.service.EnrollmentService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

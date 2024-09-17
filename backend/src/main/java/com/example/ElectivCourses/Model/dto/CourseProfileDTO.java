@@ -1,9 +1,5 @@
 package com.example.ElectivCourses.Model.dto;
 
-import com.example.ElectivCourses.Model.entity.Enrollment;
-import com.example.ElectivCourses.Model.entity.Teacher;
-import jakarta.persistence.*;
-
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 

@@ -24,36 +24,4 @@ public class CourseConverter {
         return courseDTO;
     }
 
-//    public Enrollment toEntity(EnrollmentDTO enrollmentDTO) {
-//        if (enrollmentDTO == null) {
-//            return null;
-//        }
-//
-//        CourseDTO courseDTO = new CourseDTO();
-//
-//        enrollment.setStudent(studentService.getStudentById(enrollmentDTO.getStudentId()));
-//
-//        enrollment.setCourse(courseService.getCourseById(enrollmentDTO.getCourseId()));
-//
-//        enrollment.setStatus(EnrollmentStatus.PENDING);
-//
-//        return enrollment;
-//
-//    }
 }
-
-//private Long id;
-//
-//private String courseName;
-//
-//private int maxStudents;
-//
-//private int studyYear;
-//
-//private String category;
-//
-//private DayOfWeek dayOfWeek;
-//
-//private LocalTime time;
-//
-//private Teacher teacher;

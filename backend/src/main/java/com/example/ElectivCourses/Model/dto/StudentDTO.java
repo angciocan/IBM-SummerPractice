@@ -1,6 +1,5 @@
 package com.example.ElectivCourses.Model.dto;
 
-import jakarta.persistence.Column;
 
 public class StudentDTO {
     private Long id;

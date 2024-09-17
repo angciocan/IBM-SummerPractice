@@ -1,7 +1,5 @@
 package com.example.ElectivCourses.Model.dto;
 
-import com.example.ElectivCourses.Model.entity.Course;
-
 import java.util.ArrayList;
 import java.util.List;
 

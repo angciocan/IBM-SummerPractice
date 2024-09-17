@@ -1,10 +1,7 @@
 package com.example.ElectivCourses.Model.entity;
-import java.util.HashMap;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-import java.util.HashMap;
 
 @Entity
 @Table(name = "enrollment_administration")

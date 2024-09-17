@@ -2,8 +2,6 @@ package com.example.ElectivCourses.Model.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "enrollment")
 public class Enrollment {

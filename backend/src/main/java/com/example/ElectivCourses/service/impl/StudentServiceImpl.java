@@ -36,38 +36,20 @@ public class StudentServiceImpl implements StudentService {
         List<Enrollment> studentEnrollments = getStudentById(studentId).getEnrollments();
         ArrayList<Enrollment> enrollmentList = new ArrayList<>(studentEnrollments);
         ArrayList<Enrollment> enrollmentListSorted = (ArrayList<Enrollment>) enrollmentList.stream()
-                .sorted((s1, s2) -> {
-                    if (s1.getId() < s2.getId()) {
-                        return -1;
-                    } else if (s1.getId() > s2.getId()) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                }).collect(Collectors.toList());
+                .sorted(Comparator.comparing(Enrollment::getId)).toList();
 
         return (ArrayList<EnrollmentDTO>) enrollmentListSorted.stream().map(EnrollmentConverter::toDTO).collect(Collectors.toList());
 
-//        return (ArrayList<EnrollmentDTO>) studentEnrollments.stream().map(EnrollmentConverter::toDTO).collect(Collectors.toList());
     }
 
     public ArrayList<Enrollment> getStudentEnrollments(long studentId) {
         List<Enrollment> studentEnrollments = getStudentById(studentId).getEnrollments();
         ArrayList<Enrollment> enrollmentList = new ArrayList<>(studentEnrollments);
         ArrayList<Enrollment> enrollmentListSorted = (ArrayList<Enrollment>) enrollmentList.stream()
-                .sorted((s1, s2) -> {
-                    if (s1.getId() < s2.getId()) {
-                        return -1;
-                    } else if (s1.getId() > s2.getId()) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                }).collect(Collectors.toList());
+                .sorted(Comparator.comparing(Enrollment::getId)).collect(Collectors.toList());
 
         return enrollmentListSorted;
 
-//        return (ArrayList<EnrollmentDTO>) studentEnrollments.stream().map(EnrollmentConverter::toDTO).collect(Collectors.toList());
     }
 
     @Override

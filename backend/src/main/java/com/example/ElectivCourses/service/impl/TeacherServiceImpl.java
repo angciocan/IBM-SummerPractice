@@ -1,8 +1,6 @@
 package com.example.ElectivCourses.service.impl;
 
 import com.example.ElectivCourses.Model.dto.TeacherProfileDTO;
-import com.example.ElectivCourses.Model.entity.Teacher;
-import com.example.ElectivCourses.converter.TeacherConverter;
 import com.example.ElectivCourses.converter.TeacherProfileConverter;
 import com.example.ElectivCourses.repository.TeacherRepository;
 import com.example.ElectivCourses.service.TeacherService;

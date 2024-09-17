@@ -1,9 +1,7 @@
 package com.example.ElectivCourses.converter;
 
 import com.example.ElectivCourses.Model.dto.StudentDTO;
-import com.example.ElectivCourses.Model.dto.TeacherDTO;
 import com.example.ElectivCourses.Model.entity.Student;
-import com.example.ElectivCourses.Model.entity.Teacher;
 
 public class StudentConverter {
     public static StudentDTO toDTO(Student student) {
@@ -22,20 +20,4 @@ public class StudentConverter {
         return studentDTO;
     }
 
-//    public Enrollment toEntity(EnrollmentDTO enrollmentDTO) {
-//        if (enrollmentDTO == null) {
-//            return null;
-//        }
-//
-//        CourseDTO courseDTO = new CourseDTO();
-//
-//        enrollment.setStudent(studentService.getStudentById(enrollmentDTO.getStudentId()));
-//
-//        enrollment.setCourse(courseService.getCourseById(enrollmentDTO.getCourseId()));
-//
-//        enrollment.setStatus(EnrollmentStatus.PENDING);
-//
-//        return enrollment;
-//
-//    }
 }
