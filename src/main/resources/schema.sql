@@ -1,0 +1,1 @@
+ALTER TABLE course ALTER COLUMN version SET DEFAULT 0;
