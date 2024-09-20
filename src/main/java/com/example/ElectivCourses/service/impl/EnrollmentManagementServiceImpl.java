@@ -11,9 +11,7 @@ import com.example.ElectivCourses.service.EnrollmentPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -34,56 +32,12 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
     @Qualifier("customTaskExecutor")
     private Executor executor;
 
-//    @Transactional
-//    public void processPendingEnrollments(){
-//        if(enrollmentPeriodService.isEnrollmentPeriodOpen())
-//        {
-//            throw new IllegalStateException("Enrollment period is open");
-//        }
-//        List<Enrollment> pendingEnrollments = enrollmentManagementRepository.findByStatus(EnrollmentStatus.PENDING);
-//
-//        Map<Long, List<Enrollment>> enrollmentByCourse = pendingEnrollments.stream()
-//                .collect(Collectors.groupingBy(enrollment -> enrollment.getCourse().getId()));
-//
-//        enrollmentByCourse.forEach((courseId, enrollments) -> {
-//            Course course = courseRepository.findById(courseId)
-//                    .orElseThrow(() -> new IllegalArgumentException("Course not found"));
-//
-//            enrollments.sort(Comparator.comparingDouble((Enrollment e) -> e.getStudent().getGrade()).reversed());
-//
-//            int availableEnrollments = course.getMaxStudents();
-//
-//            for(int i = 0 ; i < enrollments.size() ; i++){
-//                Enrollment enrollment = enrollments.get(i);
-//                if( i < availableEnrollments ){
-//                    enrollment.setStatus(EnrollmentStatus.ENROLLED);
-//                }
-//                else{
-//                    enrollment.setStatus(EnrollmentStatus.CLOSED);
-//                }
-//                enrollmentRepository.save(enrollment);
-//            }
-//
-//            int enrolledCount = (int) enrollments.stream()
-//                    .filter(e -> e.getStatus() == EnrollmentStatus.ENROLLED).count();
-//
-//            course.setMaxStudents(course.getMaxStudents() - enrolledCount);
-//
-//            courseRepository.save(course);
-//
-//
-//        });
-//    }
-
-
-
     public void processPendingEnrollments() {
         if (enrollmentPeriodService.isEnrollmentPeriodOpen()) {
             throw new IllegalStateException("Enrollment period is open");
         }
 
         List<Enrollment> pendingEnrollments = enrollmentManagementRepository.findByStatus(EnrollmentStatus.PENDING);
-
 
 
         Map<Long, List<Enrollment>> enrollmentByCourse = pendingEnrollments.stream()
@@ -99,12 +53,6 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
-        System.out.println("Type of enrollments: " + enrollments.getClass().getName());
-
-        for (Enrollment enrollment : enrollments) {
-            System.out.println("Type of each enrollment: " + enrollment.getClass().getName());
-        }
-
         enrollments = enrollments.stream()
                 .sorted((e1, e2) -> Double.compare(e2.getStudent().getGrade(), e1.getStudent().getGrade()))
                 .collect(Collectors.toList());
@@ -119,7 +67,7 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
             } else {
                 enrollment.setStatus(EnrollmentStatus.CLOSED);
             }
-            enrollmentRepository.save(enrollment); // Ensure thread safety
+            enrollmentRepository.save(enrollment);
         }
 
         int enrolledCount = (int) enrollments.stream()
