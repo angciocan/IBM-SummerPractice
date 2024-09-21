@@ -10,9 +10,13 @@ import com.example.ElectivCourses.repository.EnrollmentRepository;
 import com.example.ElectivCourses.repository.StudentRepository;
 import com.example.ElectivCourses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +26,22 @@ public class StudentServiceImpl implements StudentService {
     private StudentRepository studentRepository;
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+    @Autowired
+    @Qualifier("customTaskExecutor")
+    private Executor executor;
 
     @Override
     public List<StudentDTO> getAllStudents() {
-        return studentRepository.findAll().stream().map(StudentConverter::toDTO).collect(Collectors.toList());
+        List<Student> students  = studentRepository.findAll();
+
+        Queue<StudentDTO> dtoQueue = new ConcurrentLinkedQueue<>();
+
+        students.forEach(student -> executor.execute(() -> {
+            StudentDTO dto = StudentConverter.toDTO(student);
+            dtoQueue.add(dto);
+        }));
+
+        return new ArrayList<>(dtoQueue);
     }
 
     @Override
@@ -34,53 +50,50 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ArrayList<EnrollmentDTO> getStudentEnrollmentDTOs(long studentId) {
         List<Enrollment> studentEnrollments = getStudentById(studentId).getEnrollments();
-        ArrayList<Enrollment> enrollmentList = new ArrayList<>(studentEnrollments);
-        ArrayList<Enrollment> enrollmentListSorted = (ArrayList<Enrollment>) enrollmentList.stream()
-                .sorted(Comparator.comparing(Enrollment::getId)).toList();
 
-        return (ArrayList<EnrollmentDTO>) enrollmentListSorted.stream().map(EnrollmentConverter::toDTO).collect(Collectors.toList());
-
+        return (ArrayList<EnrollmentDTO>) studentEnrollments.parallelStream()
+                .sorted(Comparator.comparing(Enrollment::getId))
+                .map(EnrollmentConverter::toDTO)
+                .collect(Collectors.toList());
     }
 
     public ArrayList<Enrollment> getStudentEnrollments(long studentId) {
         List<Enrollment> studentEnrollments = getStudentById(studentId).getEnrollments();
-        ArrayList<Enrollment> enrollmentList = new ArrayList<>(studentEnrollments);
-        ArrayList<Enrollment> enrollmentListSorted = (ArrayList<Enrollment>) enrollmentList.stream()
-                .sorted(Comparator.comparing(Enrollment::getId)).collect(Collectors.toList());
 
-        return enrollmentListSorted;
+        return (ArrayList<Enrollment>) studentEnrollments.parallelStream()
+                .sorted(Comparator.comparing(Enrollment::getId))
+                .collect(Collectors.toList());
 
     }
 
+    @Transactional
     @Override
     public void updateStudentPreferenceList(Long studentId, Long courseId, int nrInList) {
-        Enrollment enrollment1 = enrollmentRepository.findAll().stream()
-                .filter(enrollment -> (Objects.equals(enrollment.getStudent().getId(), studentId)) && (Objects.equals(enrollment.getCourse().getId(), courseId)))
-                .findAny().get();
+        List<Enrollment> enrollments = enrollmentRepository.findAll().stream()
+                .filter(enrollment -> Objects.equals(enrollment.getStudent().getId(), studentId))
+                .toList();
 
-        Long enrollmentId1 = enrollment1.getId();
+        Enrollment enrollment1 = enrollments.stream()
+                .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId))
+                .findFirst().orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-        Enrollment enrollment1Copy = new Enrollment();
-        enrollment1Copy.setId(enrollment1.getId());
-        enrollment1Copy.setStudent(enrollment1.getStudent());
-        enrollment1Copy.setCourse(enrollment1.getCourse());
-        enrollment1Copy.setStatus(enrollment1.getStatus());
+        Enrollment enrollment2 = enrollments.get(nrInList);
 
-        Enrollment enrollment2 = getStudentEnrollments(studentId).get(nrInList);
+        Enrollment temp = new Enrollment();
+        temp.setId(enrollment1.getId());
+        temp.setStudent(enrollment1.getStudent());
+        temp.setCourse(enrollment1.getCourse());
+        temp.setStatus(enrollment1.getStatus());
 
+        enrollment1.setStudent(enrollment2.getStudent());
+        enrollment1.setCourse(enrollment2.getCourse());
+        enrollment1.setStatus(enrollment2.getStatus());
 
-        Long enrollmentId2 = enrollment2.getId();
+        enrollment2.setStudent(temp.getStudent());
+        enrollment2.setCourse(temp.getCourse());
+        enrollment2.setStatus(temp.getStatus());
 
-        enrollmentRepository.getReferenceById(enrollmentId1).setStudent(enrollment2.getStudent());
-        enrollmentRepository.getReferenceById(enrollmentId1).setStatus(enrollment2.getStatus());
-        enrollmentRepository.getReferenceById(enrollmentId1).setCourse(enrollment2.getCourse());
-
-        enrollmentRepository.getReferenceById(enrollmentId2).setStudent(enrollment1Copy.getStudent());
-        enrollmentRepository.getReferenceById(enrollmentId2).setStatus(enrollment1Copy.getStatus());
-        enrollmentRepository.getReferenceById(enrollmentId2).setCourse(enrollment1Copy.getCourse());
-
-        enrollmentRepository.save(enrollment1);
-        enrollmentRepository.save(enrollment2);
+        enrollmentRepository.saveAll(Arrays.asList(enrollment1, enrollment2));
     }
 }
 
