@@ -16,11 +16,13 @@ import com.example.ElectivCourses.repository.StudentRepository;
 import com.example.ElectivCourses.service.EnrollmentService;
 import com.example.ElectivCourses.service.EnrollmentAdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,139 +42,139 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Autowired
     private EnrollmentConverter enrollmentConverter;
 
-    public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
-        return enrollmentRepository.findAll().stream()
-                .anyMatch(enrollment ->
-                        enrollment.getCourse().getId().equals(courseId) &&
-                                enrollment.getStudent().getId().equals(studentId)
-                );
-    }
+    @Autowired
+    @Qualifier("customTaskExecutor")
+    private Executor executor;
 
+    public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
+        return enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId);
+    }
 
     public void enrollStudentsToMandatoryCourses() {
         System.out.println("Running enrollStudents to automatically enroll students in mandatory courses...");
 
         List<Student> students = studentRepository.findAll();
-        Map<Long, Integer> courseSeatsToDecrement = new HashMap<>();
-        List<Enrollment> newEnrollments = new ArrayList<>();
+        Map<Long, Integer> courseSeatsToDecrement = new ConcurrentHashMap<>();
+        List<Enrollment> newEnrollments = Collections.synchronizedList(new ArrayList<>());
 
-        System.out.println("Number of students: " + students.size());
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         for (Student student : students) {
-            int studyYear = student.getStudyYear();
-            System.out.println("Processing student ID: " + student.getId() + ", Study Year: " + studyYear);
-
-            int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(studyYear);
-            System.out.println("Maximum mandatory courses needed for this student: " + maxMandatoryCourses);
-
-            List<Course> coursesByStudyYear = courseRepository.findByStudyYear(studyYear);
-
-            List<Course> mandatoryCourses = coursesByStudyYear.stream()
-                    .filter(course -> course.getCategory().equals("mandatory"))
-                    .toList();
-
-            System.out.println("Found " + mandatoryCourses.size() + " mandatory courses for study year " + studyYear);
-
-            if (mandatoryCourses.size() < maxMandatoryCourses) {
-                System.out.println("Not enough mandatory courses available for student ID: " + student.getId());
-                continue;
-            }
-
-
-            for (int i = 0; i < maxMandatoryCourses; i++) {
-                Course course = mandatoryCourses.get(i);
-
-
-                boolean alreadyEnrolled = existsByCourseIdAndStudentId(course.getId(), student.getId());
-                System.out.println("Checking enrollment for student ID: " + student.getId() + ", Course ID: " + course.getId() + " - Already Enrolled: " + alreadyEnrolled);
-
-                if (!alreadyEnrolled) {
-                    Enrollment newEnrollment = new Enrollment();
-                    newEnrollment.setCourse(course);
-                    newEnrollment.setStudent(student);
-                    newEnrollment.setStatus(EnrollmentStatus.ENROLLED);
-                    newEnrollments.add(newEnrollment);
-
-
-                    courseSeatsToDecrement.put(course.getId(), courseSeatsToDecrement.getOrDefault(course.getId(), 0) + 1);
-                    System.out.println("Enrolling student ID: " + student.getId() + " in course ID: " + course.getId());
-                } else {
-                    System.out.println("Student ID: " + student.getId() + " is already enrolled in course ID: " + course.getId());
-                }
-            }
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> processStudentEnrollment(student, newEnrollments, courseSeatsToDecrement), executor);
+            futures.add(future);
         }
 
-        System.out.println("New enrollments to be saved: " + newEnrollments.size());
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
-        for (Map.Entry<Long, Integer> entry : courseSeatsToDecrement.entrySet()) {
-            Course course = courseRepository.findById(entry.getKey())
-                    .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + entry.getKey()));
-
-            int seatsToDecrement = entry.getValue();
-            System.out.println("Adjusting seats for course ID: " + course.getId() + ". Seats to decrement: " + seatsToDecrement);
-
-            if (course.getMaxStudents() < seatsToDecrement) {
-                throw new IllegalStateException("Course with ID: " + course.getId() + " does not have enough seats available.");
-            }
-
-            course.setMaxStudents(course.getMaxStudents() - seatsToDecrement);
-            courseRepository.save(course);
-            System.out.println("Updated course ID: " + course.getId() + " - New available seats: " + course.getMaxStudents());
-        }
+        courseSeatsToDecrement.forEach(this::adjustCourseSeats);
 
         enrollmentRepository.saveAll(newEnrollments);
-        System.out.println("Saved all new enrollments.");
+        System.out.println("Saved all enrollments to mandatory courses.");
     }
 
 
+    private void processStudentEnrollment(Student student, List<Enrollment> newEnrollments, Map<Long, Integer> courseSeatsToDecrement) {
+        int studyYear = student.getStudyYear();
+
+        int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(studyYear);
+
+        List<Course> coursesByStudyYear = courseRepository.findByStudyYear(studyYear);
+
+        List<Course> mandatoryCourses = coursesByStudyYear.stream()
+                .filter(course -> course.getCategory().equals("mandatory"))
+                .toList();
+
+        if (mandatoryCourses.size() < maxMandatoryCourses) {
+            System.out.println("Not enough mandatory courses available for student ID: " + student.getId());
+            return;
+        }
+
+        for (int i = 0; i < maxMandatoryCourses; i++) {
+            Course course = mandatoryCourses.get(i);
+
+            boolean alreadyEnrolled = existsByCourseIdAndStudentId(course.getId(), student.getId());
+            System.out.println("Checking enrollment for student ID: " + student.getId() + ", Course ID: " + course.getId() + " - Already Enrolled: " + alreadyEnrolled);
+
+            if (!alreadyEnrolled) {
+                Enrollment newEnrollment = new Enrollment();
+                newEnrollment.setCourse(course);
+                newEnrollment.setStudent(student);
+                newEnrollment.setStatus(EnrollmentStatus.ENROLLED);
+
+                newEnrollments.add(newEnrollment);
+
+                courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
+                System.out.println("Enrolling student ID: " + student.getId() + " in course ID: " + course.getId());
+            } else {
+                System.out.println("Student ID: " + student.getId() + " is already enrolled in course ID: " + course.getId());
+            }
+        }
+    }
+
+    private void processEnrollment(Enrollment enrollment, Map<Long, Integer> courseSeatsToDecrement) {
+        Course course = enrollment.getCourse();
+        Student student = enrollment.getStudent();
+
+        if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
+            enrollment.setStatus(EnrollmentStatus.ENROLLED);
+            courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
+        }
+
+        if (student.getStudyYear() != course.getStudyYear()) {
+            throw new IllegalStateException("Study year mismatch for student ID: " + student.getId() + " and course ID: " + course.getId());
+        }
+
+        int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(student.getStudyYear());
+        long currentMandatoryCourses = enrollmentRepository.findAll().stream()
+                .filter(e -> e.getStudent().getId().equals(student.getId()) && e.getCourse().getCategory().equals("mandatory"))
+                .count();
+
+        if (currentMandatoryCourses > maxMandatoryCourses) {
+            throw new IllegalStateException("Student has exceeded the max number of mandatory courses for their study year: " + student.getId());
+        }
+    }
+
+    private void adjustCourseSeats(Long courseId, int seatsToDecrement) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + courseId));
+
+        if (course.getMaxStudents() < seatsToDecrement) {
+            throw new IllegalStateException("Course with ID: " + course.getId() + " does not have enough seats available.");
+        }
+
+        course.setMaxStudents(course.getMaxStudents() - seatsToDecrement);
+        courseRepository.save(course);
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void fixEnrollments() {
         List<Enrollment> enrollments = enrollmentRepository.findAll();
+        Map<Long, Integer> courseSeatsToDecrement = new ConcurrentHashMap<>();
 
-        Map<Long, Integer> courseSeatsToDecrement = new HashMap<>();
+        CountDownLatch latch = new CountDownLatch(enrollments.size());
 
         for (Enrollment enrollment : enrollments) {
-            Course course = enrollment.getCourse();
-            Student student = enrollment.getStudent();
-
-            if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
-                enrollment.setStatus(EnrollmentStatus.ENROLLED);
-
-                courseSeatsToDecrement.put(course.getId(), courseSeatsToDecrement.getOrDefault(course.getId(), 0) + 1);
-            }
-
-            if (student.getStudyYear() != course.getStudyYear()) {
-                throw new IllegalStateException("Study year mismatch for student ID: " + student.getId() + " and course ID: " + course.getId());
-            }
-
-            int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(student.getStudyYear());
-            long currentMandatoryCourses = enrollments.stream()
-                    .filter(e -> e.getStudent().getId().equals(student.getId()) && e.getCourse().getCategory().equals("mandatory"))
-                    .count();
-
-            if (currentMandatoryCourses > maxMandatoryCourses) {
-                throw new IllegalStateException("Student has exceeded the max number of mandatory courses for their study year: " + student.getId());
-            }
+            executor.execute(() -> {
+                try {
+                    processEnrollment(enrollment, courseSeatsToDecrement);
+                } finally {
+                    latch.countDown();
+                }
+            });
         }
 
-        for (Map.Entry<Long, Integer> entry : courseSeatsToDecrement.entrySet()) {
-            Course course = courseRepository.findById(entry.getKey())
-                    .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + entry.getKey()));
-
-            int seatsToDecrement = entry.getValue();
-            if (course.getMaxStudents() < seatsToDecrement) {
-                throw new IllegalStateException("Course with ID: " + course.getId() + " does not have enough seats available.");
-            }
-
-            course.setMaxStudents(course.getMaxStudents() - seatsToDecrement);
-            courseRepository.save(course);
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Fixing enrollments was interrupted", e);
         }
+
+        courseSeatsToDecrement.forEach(this::adjustCourseSeats);
 
         enrollStudentsToMandatoryCourses();
 
         enrollmentRepository.saveAll(enrollments);
-
     }
 
     @Override

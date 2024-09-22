@@ -30,7 +30,7 @@ public class EnrollmentApi {
         return new ResponseEntity<>(enrollmentDTO2, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{studentId}-{courseId}")
+    @DeleteMapping("/delete/{studentId}/{courseId}")
     public void deleteEnrollment(@PathVariable("studentId") Long studentId, @PathVariable("courseId") Long courseId) {
         enrollmentService.deleteEnrollment(studentId, courseId);
     }
