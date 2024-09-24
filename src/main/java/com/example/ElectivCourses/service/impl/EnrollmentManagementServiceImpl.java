@@ -3,6 +3,8 @@ package com.example.ElectivCourses.service.impl;
 import com.example.ElectivCourses.Model.entity.Course;
 import com.example.ElectivCourses.Model.entity.Enrollment;
 import com.example.ElectivCourses.Model.entity.EnrollmentStatus;
+import com.example.ElectivCourses.event.EnrollmentStatusChangedEvent;
+import com.example.ElectivCourses.listener.EnrollmentStatusChangeListener;
 import com.example.ElectivCourses.repository.CourseRepository;
 import com.example.ElectivCourses.repository.EnrollmentManagementRepository;
 import com.example.ElectivCourses.repository.EnrollmentRepository;
@@ -10,6 +12,7 @@ import com.example.ElectivCourses.service.EnrollmentManagementService;
 import com.example.ElectivCourses.service.EnrollmentPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +30,8 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
     private CourseRepository courseRepository;
     @Autowired
     private EnrollmentPeriodService enrollmentPeriodService;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     @Qualifier("customTaskExecutor")
@@ -63,8 +68,12 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
         for (int i = 0; i < enrollments.size(); i++) {
             Enrollment enrollment = enrollments.get(i);
             if (i < availableEnrollments) {
+
+                eventPublisher.publishEvent(new EnrollmentStatusChangedEvent(this, enrollment.getId(), enrollment.getStatus()));
                 enrollment.setStatus(EnrollmentStatus.ENROLLED);
             } else {
+
+                eventPublisher.publishEvent(new EnrollmentStatusChangedEvent(this, enrollment.getId(), enrollment.getStatus()));
                 enrollment.setStatus(EnrollmentStatus.CLOSED);
             }
             enrollmentRepository.save(enrollment);

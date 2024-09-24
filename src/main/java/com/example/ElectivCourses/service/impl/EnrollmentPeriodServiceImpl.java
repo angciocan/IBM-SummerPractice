@@ -1,6 +1,7 @@
 package com.example.ElectivCourses.service.impl;
 
 import com.example.ElectivCourses.Model.entity.EnrollmentPeriod;
+import com.example.ElectivCourses.event.EnrollmentPeriodClosedEvent;
 import com.example.ElectivCourses.event.EnrollmentPeriodOpenedEvent;
 import com.example.ElectivCourses.repository.EnrollmentPeriodRepository;
 import com.example.ElectivCourses.service.EnrollmentPeriodService;
@@ -33,7 +34,7 @@ public class EnrollmentPeriodServiceImpl implements EnrollmentPeriodService {
         period.setOpen(false);
         enrollmentPeriodRepository.save(period);
 
-        eventPublisher.publishEvent(new EnrollmentPeriodOpenedEvent(this, period.getId()));
+        eventPublisher.publishEvent(new EnrollmentPeriodClosedEvent(this, period.getId()));
     }
 
     @Override

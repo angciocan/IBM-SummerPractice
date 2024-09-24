@@ -7,8 +7,6 @@ public class EnrollmentStatusChangedEvent extends ApplicationEvent {
     private final Long enrollmentId;
     private final EnrollmentStatus enrollmentStatus;
 
-
-
     public EnrollmentStatusChangedEvent(Object source, Long enrollmentId, EnrollmentStatus enrollmentStatus) {
         super(source);
         this.enrollmentId = enrollmentId;

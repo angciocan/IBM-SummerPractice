@@ -10,6 +10,7 @@ import com.example.ElectivCourses.Model.entity.EnrollmentStatus;
 import com.example.ElectivCourses.Model.entity.Student;
 import com.example.ElectivCourses.converter.EnrollmentConverter;
 import com.example.ElectivCourses.converter.StudentConverter;
+import com.example.ElectivCourses.event.EnrollmentStatusChangedEvent;
 import com.example.ElectivCourses.repository.CourseRepository;
 import com.example.ElectivCourses.repository.EnrollmentRepository;
 import com.example.ElectivCourses.repository.StudentRepository;
@@ -18,6 +19,7 @@ import com.example.ElectivCourses.service.EnrollmentAdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Autowired
     @Qualifier("customTaskExecutor")
     private Executor executor;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
         return enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId);
@@ -111,29 +116,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
     }
 
-    private void processEnrollment(Enrollment enrollment, Map<Long, Integer> courseSeatsToDecrement) {
-        Course course = enrollment.getCourse();
-        Student student = enrollment.getStudent();
-
-        if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
-            enrollment.setStatus(EnrollmentStatus.ENROLLED);
-            courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
-        }
-
-        if (student.getStudyYear() != course.getStudyYear()) {
-            throw new IllegalStateException("Study year mismatch for student ID: " + student.getId() + " and course ID: " + course.getId());
-        }
-
-        int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(student.getStudyYear());
-        long currentMandatoryCourses = enrollmentRepository.findAll().stream()
-                .filter(e -> e.getStudent().getId().equals(student.getId()) && e.getCourse().getCategory().equals("mandatory"))
-                .count();
-
-        if (currentMandatoryCourses > maxMandatoryCourses) {
-            throw new IllegalStateException("Student has exceeded the max number of mandatory courses for their study year: " + student.getId());
-        }
-    }
-
     private void adjustCourseSeats(Long courseId, int seatsToDecrement) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + courseId));
@@ -175,6 +157,32 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollStudentsToMandatoryCourses();
 
         enrollmentRepository.saveAll(enrollments);
+    }
+
+    private void processEnrollment(Enrollment enrollment, Map<Long, Integer> courseSeatsToDecrement) {
+        Course course = enrollment.getCourse();
+        Student student = enrollment.getStudent();
+
+        if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
+
+            eventPublisher.publishEvent(new EnrollmentStatusChangedEvent(this, enrollment.getId(), enrollment.getStatus()));
+
+            enrollment.setStatus(EnrollmentStatus.ENROLLED);
+            courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
+        }
+
+        if (student.getStudyYear() != course.getStudyYear()) {
+            throw new IllegalStateException("Study year mismatch for student ID: " + student.getId() + " and course ID: " + course.getId());
+        }
+
+        int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(student.getStudyYear());
+        long currentMandatoryCourses = enrollmentRepository.findAll().stream()
+                .filter(e -> e.getStudent().getId().equals(student.getId()) && e.getCourse().getCategory().equals("mandatory"))
+                .count();
+
+        if (currentMandatoryCourses > maxMandatoryCourses) {
+            throw new IllegalStateException("Student has exceeded the max number of mandatory courses for their study year: " + student.getId());
+        }
     }
 
     @Override
