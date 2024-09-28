@@ -1,15 +1,14 @@
-package com.example.electivecourses.rabbit;
+package com.example.electivecourses.rabbit.enrollment;
 
 
-import com.example.electivecourses.model.entity.Enrollment;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RabbitMQEnrollmentConsumer {
-    @RabbitListener(queues = "enrollment-queue")
+    @RabbitListener(queues = "enrollment-queue", concurrency = "10")
     public void receiveEnrollment(String message) {
-        System.out.println("Received enrollment message" + message);
+        System.out.println("Received enrollment message " + message);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.electivecourses.rabbit;
+package com.example.electivecourses.rabbit.general;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;

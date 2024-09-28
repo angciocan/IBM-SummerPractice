@@ -15,10 +15,10 @@ import com.example.electivecourses.repository.EnrollmentRepository;
 import com.example.electivecourses.repository.StudentRepository;
 import com.example.electivecourses.service.EnrollmentService;
 import com.example.electivecourses.service.EnrollmentAdministrationService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +48,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private Executor executor;
 
     @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private RabbitTemplate rabbitTemplate;
 
     public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
         return enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId);
@@ -64,7 +64,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         for (Student student : students) {
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> processStudentEnrollment(student, newEnrollments, courseSeatsToDecrement), executor);
+
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
+                    rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", student.getId().toString()), executor);
+            futures.add(future);
+        }
+
+        for (Student student : students) {
+
+            rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", student.getId().toString());
+
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
+                    processStudentEnrollment(student, newEnrollments, courseSeatsToDecrement), executor);
             futures.add(future);
         }
 
@@ -73,11 +84,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         courseSeatsToDecrement.forEach(this::adjustCourseSeats);
 
         enrollmentRepository.saveAll(newEnrollments);
-        System.out.println("Saved all enrollments to mandatory courses.");
     }
 
 
     private void processStudentEnrollment(Student student, List<Enrollment> newEnrollments, Map<Long, Integer> courseSeatsToDecrement) {
+
         int studyYear = student.getStudyYear();
 
         int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(studyYear);
@@ -97,7 +108,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             Course course = mandatoryCourses.get(i);
 
             boolean alreadyEnrolled = existsByCourseIdAndStudentId(course.getId(), student.getId());
-            System.out.println("Checking enrollment for student ID: " + student.getId() + ", Course ID: " + course.getId() + " - Already Enrolled: " + alreadyEnrolled);
 
             if (!alreadyEnrolled) {
                 Enrollment newEnrollment = new Enrollment();
@@ -108,11 +118,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 newEnrollments.add(newEnrollment);
 
                 courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
-                System.out.println("Enrolling student ID: " + student.getId() + " in course ID: " + course.getId());
-            } else {
-                System.out.println("Student ID: " + student.getId() + " is already enrolled in course ID: " + course.getId());
             }
         }
+        rabbitTemplate.convertAndSend("enrollment-exchange", "enrollment-routing-key", "Finished processing for student ID: " + student.getId());
+
+
     }
 
     private void adjustCourseSeats(Long courseId, int seatsToDecrement) {
@@ -234,6 +244,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         courseRepository.save(course);
 
         newEnrollment = enrollmentRepository.save(newEnrollment);
+
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Finished creating enrollment for student ID: " + newEnrollment.getStudent().getId() + " for course ID: " + newEnrollment.getCourse().getId());
+
 
         return EnrollmentConverter.toDTO(newEnrollment);
     }

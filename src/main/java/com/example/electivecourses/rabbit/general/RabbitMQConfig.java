@@ -1,4 +1,4 @@
-package com.example.electivecourses.rabbit;
+package com.example.electivecourses.rabbit.general;
 
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
