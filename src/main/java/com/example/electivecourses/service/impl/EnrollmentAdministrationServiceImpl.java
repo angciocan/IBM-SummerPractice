@@ -64,17 +64,5 @@ public class EnrollmentAdministrationServiceImpl implements EnrollmentAdministra
         enrollmentAdministration1.ifPresent(enrollmentAdministration -> enrollmentAdministrationRepository.delete(enrollmentAdministration));
     }
 
-//    @Override
-//    public void setEnrollmentPeriod(LocalDate startTime, LocalDate endTime) {
-//        EnrollmentAdministration.setStartTime(startTime);
-//        EnrollmentAdministration.setEndTime(endTime);
-//    }
-//
-//    @Override
-//    public ArrayList<LocalDate> getEnrollmentPeriod() {
-//        ArrayList<LocalDate> enrollmentPeriod = new ArrayList<>();
-//        enrollmentPeriod.add(EnrollmentAdministration.getStartTime());
-//        enrollmentPeriod.add(EnrollmentAdministration.getEndTime());
-//        return enrollmentPeriod;
-//    }
+
 }

@@ -41,13 +41,4 @@ public class EnrollmentAdministrationApi {
         enrollmentAdministrationService.deleteEnrollmentAdministration(enrollmentAdministrationId);
     }
 
-//    @PostMapping("/setEnrollmentPeriod/{startTime}/{endTime}")
-//    void setEnrollmentPeriod(@PathVariable("startTime")LocalDate startTime, @PathVariable("endTime") LocalDate endTime) {
-//        enrollmentAdministrationService.setEnrollmentPeriod(startTime, endTime);
-//    }
-//
-//    @GetMapping("/getEnrollmentPeriod")
-//    ArrayList<LocalDate> getEnrollmentPeriod() {
-//        return enrollmentAdministrationService.getEnrollmentPeriod();
-//    }
 }
