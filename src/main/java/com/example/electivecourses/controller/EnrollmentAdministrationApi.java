@@ -6,8 +6,6 @@ import com.example.electivecourses.service.EnrollmentAdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,13 +41,13 @@ public class EnrollmentAdministrationApi {
         enrollmentAdministrationService.deleteEnrollmentAdministration(enrollmentAdministrationId);
     }
 
-    @PostMapping("/setEnrollmentPeriod/{startTime}/{endTime}")
-    void setEnrollmentPeriod(@PathVariable("startTime")LocalDate startTime, @PathVariable("endTime") LocalDate endTime) {
-        enrollmentAdministrationService.setEnrollmentPeriod(startTime, endTime);
-    }
-
-    @GetMapping("/getEnrollmentPeriod")
-    ArrayList<LocalDate> getEnrollmentPeriod() {
-        return enrollmentAdministrationService.getEnrollmentPeriod();
-    }
+//    @PostMapping("/setEnrollmentPeriod/{startTime}/{endTime}")
+//    void setEnrollmentPeriod(@PathVariable("startTime")LocalDate startTime, @PathVariable("endTime") LocalDate endTime) {
+//        enrollmentAdministrationService.setEnrollmentPeriod(startTime, endTime);
+//    }
+//
+//    @GetMapping("/getEnrollmentPeriod")
+//    ArrayList<LocalDate> getEnrollmentPeriod() {
+//        return enrollmentAdministrationService.getEnrollmentPeriod();
+//    }
 }

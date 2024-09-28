@@ -6,8 +6,6 @@ import com.example.electivecourses.service.EnrollmentAdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -16,6 +14,8 @@ import java.util.Optional;
 public class EnrollmentAdministrationServiceImpl implements EnrollmentAdministrationService {
     @Autowired
     private EnrollmentAdministrationRepository enrollmentAdministrationRepository;
+
+
 
     @Override
     public List<EnrollmentAdministration> getAllEnrollmentAdministrations() {
@@ -64,17 +64,17 @@ public class EnrollmentAdministrationServiceImpl implements EnrollmentAdministra
         enrollmentAdministration1.ifPresent(enrollmentAdministration -> enrollmentAdministrationRepository.delete(enrollmentAdministration));
     }
 
-    @Override
-    public void setEnrollmentPeriod(LocalDate startTime, LocalDate endTime) {
-        EnrollmentAdministration.setStartTime(startTime);
-        EnrollmentAdministration.setEndTime(endTime);
-    }
-
-    @Override
-    public ArrayList<LocalDate> getEnrollmentPeriod() {
-        ArrayList<LocalDate> enrollmentPeriod = new ArrayList<>();
-        enrollmentPeriod.add(EnrollmentAdministration.getStartTime());
-        enrollmentPeriod.add(EnrollmentAdministration.getEndTime());
-        return enrollmentPeriod;
-    }
+//    @Override
+//    public void setEnrollmentPeriod(LocalDate startTime, LocalDate endTime) {
+//        EnrollmentAdministration.setStartTime(startTime);
+//        EnrollmentAdministration.setEndTime(endTime);
+//    }
+//
+//    @Override
+//    public ArrayList<LocalDate> getEnrollmentPeriod() {
+//        ArrayList<LocalDate> enrollmentPeriod = new ArrayList<>();
+//        enrollmentPeriod.add(EnrollmentAdministration.getStartTime());
+//        enrollmentPeriod.add(EnrollmentAdministration.getEndTime());
+//        return enrollmentPeriod;
+//    }
 }

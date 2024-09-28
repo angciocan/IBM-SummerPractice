@@ -8,9 +8,9 @@ import com.example.electivecourses.repository.EnrollmentManagementRepository;
 import com.example.electivecourses.repository.EnrollmentRepository;
 import com.example.electivecourses.service.EnrollmentManagementService;
 import com.example.electivecourses.service.EnrollmentPeriodService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentManagementServiceImpl implements EnrollmentManagementService {
+
     @Autowired
     private EnrollmentRepository enrollmentRepository;
     @Autowired
@@ -32,6 +33,9 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
     @Autowired
     @Qualifier("customTaskExecutor")
     private Executor executor;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     public void processPendingEnrollments() {
         if (enrollmentPeriodService.isEnrollmentPeriodOpen()) {
@@ -62,14 +66,22 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
         int availableEnrollments = course.getMaxStudents();
 
         for (int i = 0; i < enrollments.size(); i++) {
+
+
+
             Enrollment enrollment = enrollments.get(i);
             if (i < availableEnrollments) {
 
-
                 enrollment.setStatus(EnrollmentStatus.ENROLLED);
-            } else {
 
+                rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Enrolled student with Id: " + enrollment.getStudent() + "to course with Id:" + enrollment.getCourse());
+
+
+            } else {
                 enrollment.setStatus(EnrollmentStatus.CLOSED);
+
+                rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Rejected student with Id: " + enrollment.getStudent() + "to course with Id:" + enrollment.getCourse());
+
             }
             enrollmentRepository.save(enrollment);
         }

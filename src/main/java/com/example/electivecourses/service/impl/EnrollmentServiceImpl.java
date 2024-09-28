@@ -253,11 +253,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<EnrollmentDTO> getAllEnrollments() {
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Fetched all the enrollments");
+
         return enrollmentRepository.findAll().stream().map(EnrollmentConverter::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public void deleteEnrollment(Long studentId, Long courseId) {
+
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Deleting enrollment for student ID: " + studentId + "To course ID: " + courseId);
+
         Optional<Enrollment> existentEnrollment = enrollmentRepository.findAll().stream()
                 .filter(enrollment -> Objects.equals(enrollment.getStudent().getId(), studentId))
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId))
@@ -269,12 +274,19 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public long getNrOfCurrentApplications(Long courseId) {
+
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Getting number of applications to course: " + courseId );
+
         return enrollmentRepository.findAll().stream()
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.PENDING).count();
     }
 
     @Override
     public List<StudentDTO> getStudentsPendingEnrollmentToCourse(Long courseId) {
+
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Getting pending enrollments to course: " + courseId );
+
+
         return enrollmentRepository.findAll().stream()
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.PENDING)
                 .map(enrollment -> StudentConverter.toDTO(enrollment.getStudent())).collect(Collectors.toList());
@@ -282,12 +294,20 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<StudentDTO> getStudentsEnrolledToCourse(Long courseId) {
+
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Getting students enrolled to course:" + courseId );
+
+
         return enrollmentRepository.findAll().stream()
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.ENROLLED)
                 .map(enrollment -> StudentConverter.toDTO(enrollment.getStudent())).collect(Collectors.toList());
     }
     @Override
     public List<CourseDTO> getCoursesForStudent(Long studentId) {
+
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Getting courses for student: " + studentId );
+
+
         List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId);
         return enrollments.stream()
                 .map(enrollment -> {
