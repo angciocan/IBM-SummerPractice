@@ -11,6 +11,7 @@ public class RabbitMQConfig {
         return new Queue("queue-name", false);
     }
 
+
     @Bean
     public Exchange exchange(){
         return new DirectExchange("exchange-name");
@@ -23,4 +24,7 @@ public class RabbitMQConfig {
                 .with("routing-key")
                 .noargs();
     }
+
+
+
 }

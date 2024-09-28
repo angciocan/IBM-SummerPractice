@@ -1,8 +1,6 @@
 package com.example.electivecourses.service.impl;
 
 import com.example.electivecourses.model.entity.EnrollmentPeriod;
-import com.example.electivecourses.event.EnrollmentPeriodClosedEvent;
-import com.example.electivecourses.event.EnrollmentPeriodOpenedEvent;
 import com.example.electivecourses.repository.EnrollmentPeriodRepository;
 import com.example.electivecourses.service.EnrollmentPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ public class EnrollmentPeriodServiceImpl implements EnrollmentPeriodService {
         period.setOpen(true);
         enrollmentPeriodRepository.save(period);
 
-        eventPublisher.publishEvent(new EnrollmentPeriodOpenedEvent(this, period.getId()));
 
     }
 
@@ -34,7 +31,6 @@ public class EnrollmentPeriodServiceImpl implements EnrollmentPeriodService {
         period.setOpen(false);
         enrollmentPeriodRepository.save(period);
 
-        eventPublisher.publishEvent(new EnrollmentPeriodClosedEvent(this, period.getId()));
     }
 
     @Override

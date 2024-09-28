@@ -22,4 +22,10 @@ public class RabbitMQController {
         rabbitMQProducer.sendMessage(message);
         return "Message sent" + message;
     }
+
+    @PostMapping("/sendEnrollment")
+    public String sendEnrollmentMessage(@RequestParam("message") String message) {
+        rabbitMQProducer.sendMessage(message);
+        return "Message sent" + message;
+    }
 }

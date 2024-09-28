@@ -10,7 +10,6 @@ import com.example.electivecourses.model.entity.EnrollmentStatus;
 import com.example.electivecourses.model.entity.Student;
 import com.example.electivecourses.converter.EnrollmentConverter;
 import com.example.electivecourses.converter.StudentConverter;
-import com.example.electivecourses.event.EnrollmentStatusChangedEvent;
 import com.example.electivecourses.repository.CourseRepository;
 import com.example.electivecourses.repository.EnrollmentRepository;
 import com.example.electivecourses.repository.StudentRepository;
@@ -165,7 +164,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
 
-            eventPublisher.publishEvent(new EnrollmentStatusChangedEvent(this, enrollment.getId(), enrollment.getStatus()));
 
             enrollment.setStatus(EnrollmentStatus.ENROLLED);
             courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);

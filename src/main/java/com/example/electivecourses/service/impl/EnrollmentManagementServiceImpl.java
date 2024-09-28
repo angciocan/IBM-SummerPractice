@@ -3,7 +3,6 @@ package com.example.electivecourses.service.impl;
 import com.example.electivecourses.model.entity.Course;
 import com.example.electivecourses.model.entity.Enrollment;
 import com.example.electivecourses.model.entity.EnrollmentStatus;
-import com.example.electivecourses.event.EnrollmentStatusChangedEvent;
 import com.example.electivecourses.repository.CourseRepository;
 import com.example.electivecourses.repository.EnrollmentManagementRepository;
 import com.example.electivecourses.repository.EnrollmentRepository;
@@ -29,8 +28,6 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
     private CourseRepository courseRepository;
     @Autowired
     private EnrollmentPeriodService enrollmentPeriodService;
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     @Qualifier("customTaskExecutor")
@@ -68,11 +65,10 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
             Enrollment enrollment = enrollments.get(i);
             if (i < availableEnrollments) {
 
-                eventPublisher.publishEvent(new EnrollmentStatusChangedEvent(this, enrollment.getId(), enrollment.getStatus()));
+
                 enrollment.setStatus(EnrollmentStatus.ENROLLED);
             } else {
 
-                eventPublisher.publishEvent(new EnrollmentStatusChangedEvent(this, enrollment.getId(), enrollment.getStatus()));
                 enrollment.setStatus(EnrollmentStatus.CLOSED);
             }
             enrollmentRepository.save(enrollment);
