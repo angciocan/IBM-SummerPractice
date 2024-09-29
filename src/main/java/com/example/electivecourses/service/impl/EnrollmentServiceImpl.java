@@ -70,7 +70,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         for (Student student : students) {
 
             CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
-                    rabbitMQNotificationProducer.notifyMessage(student.getId(),"Started enrollment for: "), executor);
+                    rabbitMQNotificationProducer.notifyMessage(student.getId(),"Started your enrollment: "), executor);
             futures.add(future);
         }
 
@@ -123,7 +123,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 
                 courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
-                rabbitMQNotificationProducer.notifyMessage(student.getId(),"Sending notification for enrollment to: ");
+                rabbitMQNotificationProducer.notifyMessage(student.getId(),"Finished your enrollment to courses ");
 
             }
 

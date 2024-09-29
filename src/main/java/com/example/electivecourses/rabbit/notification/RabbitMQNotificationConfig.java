@@ -1,9 +1,6 @@
 package com.example.electivecourses.rabbit.notification;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -18,15 +15,16 @@ public class RabbitMQNotificationConfig {
     }
 
     @Bean
-    public DirectExchange notificationExchange() {
+    public Exchange notificationExchange() {
         return new DirectExchange("notification-exchange");
     }
 
     @Bean
-    public Binding notificationBinding(Queue queue, DirectExchange notificationExchange) {
-        return BindingBuilder.bind(queue)
+    public Binding notificationBinding(Queue notificationQueue, Exchange notificationExchange) {
+        return BindingBuilder.bind(notificationQueue)
                 .to(notificationExchange)
-                .with("notification-routing-key");
+                .with("notification-routing-key")
+                .noargs();
     }
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {

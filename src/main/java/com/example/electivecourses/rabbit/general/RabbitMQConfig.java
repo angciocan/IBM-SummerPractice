@@ -7,20 +7,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     @Bean
-    public Queue queue(){
-        return new Queue("queue-name", false);
+    public Queue generalQueue(){
+        return new Queue("queue-names", false);
     }
 
 
     @Bean
-    public Exchange exchange(){
+    public Exchange generalExchange(){
+
         return new DirectExchange("exchange-name");
     }
 
     @Bean
-    public Binding binding(Queue queue, Exchange exchange){
-        return BindingBuilder.bind(queue)
-                .to(exchange)
+    public Binding generalBinding(Queue generalQueue, Exchange generalExchange){
+        return BindingBuilder.bind(generalQueue)
+                .to(generalExchange)
                 .with("routing-key")
                 .noargs();
     }

@@ -1,8 +1,11 @@
-package com.example.electivecourses.rabbit;
+package com.example.electivecourses.rabbit.notification;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class NotificationEvent {
+
     private Long userId;
     private String message;
     private String notificationType;

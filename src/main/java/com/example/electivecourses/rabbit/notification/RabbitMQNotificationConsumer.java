@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RabbitMQNotificationConsumer {
-    @RabbitListener(queues = "notification-queue", concurrency = "10")
-    public void receiveEnrollment(String message) {
-        System.out.println("Received notification message " + message);
+    @RabbitListener(queues = "notification-queue")
+    public void receiveNotification(String message) {
+        System.out.println("Received message from RabbitMQNotificationConsumer: " + message);
     }
 }
