@@ -10,6 +10,7 @@ import com.example.electivecourses.model.entity.EnrollmentStatus;
 import com.example.electivecourses.model.entity.Student;
 import com.example.electivecourses.converter.EnrollmentConverter;
 import com.example.electivecourses.converter.StudentConverter;
+import com.example.electivecourses.rabbit.notification.RabbitMQNotificationProducer;
 import com.example.electivecourses.repository.CourseRepository;
 import com.example.electivecourses.repository.EnrollmentRepository;
 import com.example.electivecourses.repository.StudentRepository;
@@ -49,6 +50,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private RabbitMQNotificationProducer rabbitMQNotificationProducer;
+
 
     public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
         return enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId);
@@ -66,13 +70,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         for (Student student : students) {
 
             CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
-                    rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", student.getId().toString()), executor);
+                    rabbitMQNotificationProducer.notifyMessage(student.getId(),"Started enrollment for: "), executor);
             futures.add(future);
         }
 
         for (Student student : students) {
-
-            rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", student.getId().toString());
 
             CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
                     processStudentEnrollment(student, newEnrollments, courseSeatsToDecrement), executor);
@@ -105,6 +107,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         for (int i = 0; i < maxMandatoryCourses; i++) {
+
             Course course = mandatoryCourses.get(i);
 
             boolean alreadyEnrolled = existsByCourseIdAndStudentId(course.getId(), student.getId());
@@ -117,10 +120,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
                 newEnrollments.add(newEnrollment);
 
+
+
                 courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
+                rabbitMQNotificationProducer.notifyMessage(student.getId(),"Sending notification for enrollment to: ");
+
             }
+
+
         }
-        rabbitTemplate.convertAndSend("enrollment-exchange", "enrollment-routing-key", "Finished processing for student ID: " + student.getId());
 
 
     }
@@ -245,8 +253,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         newEnrollment = enrollmentRepository.save(newEnrollment);
 
-        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Finished creating enrollment for student ID: " + newEnrollment.getStudent().getId() + " for course ID: " + newEnrollment.getCourse().getId());
-
+        rabbitMQNotificationProducer.notifyMessage(enrollmentDTO.getStudentId(),"Sending notification: asdasdas ");
 
         return EnrollmentConverter.toDTO(newEnrollment);
     }
