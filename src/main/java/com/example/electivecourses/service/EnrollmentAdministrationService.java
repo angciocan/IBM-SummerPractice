@@ -9,6 +9,4 @@ public interface EnrollmentAdministrationService {
     List<EnrollmentAdministration> getAllEnrollmentAdministrations();
     int nrOfMandatoryCoursesByYear(int studyYear);
     int nrOfElectiveCoursesByYear(int studyYear);
-    EnrollmentAdministration createEnrollmentAdministration(int studyYear, int nrOfMandatoryCourses, int nrOfElectivCourses);
-    void deleteEnrollmentAdministration(int enrollmentAdministrationId);
 }

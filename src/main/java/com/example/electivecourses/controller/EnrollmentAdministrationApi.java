@@ -30,15 +30,4 @@ public class EnrollmentAdministrationApi {
         return enrollmentAdministrationService.nrOfElectiveCoursesByYear(studyYear);
     }
 
-
-    @PostMapping("/create/{studyYear}/{nrOfMandatoryCourses}/{nrOfElectiveCourses}")
-    EnrollmentAdministration createEnrollmentAdministration(@PathVariable("studyYear") int studyYear, @PathVariable("nrOfMandatoryCourses") int nrOfMandatoryCourses, @PathVariable("nrOfElectiveCourses") int nrOfElectiveCourses) {
-        return enrollmentAdministrationService.createEnrollmentAdministration(studyYear, nrOfMandatoryCourses, nrOfElectiveCourses);
-    }
-
-    @DeleteMapping("/delete/{studyYear}")
-    void deleteEnrollmentAdministration(@PathVariable("studyYear") int enrollmentAdministrationId) {
-        enrollmentAdministrationService.deleteEnrollmentAdministration(enrollmentAdministrationId);
-    }
-
 }
