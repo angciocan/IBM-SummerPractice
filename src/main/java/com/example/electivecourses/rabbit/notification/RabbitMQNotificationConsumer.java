@@ -16,5 +16,5 @@ public class RabbitMQNotificationConsumer {
     public void receiveNotification(String message) {
 
         auditLogger.logMessageReceived(message);
-        auditLogger.logMessageReceived(message);}
+        auditLogger.logMessageProcessed(message);}
 }
