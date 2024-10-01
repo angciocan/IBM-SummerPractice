@@ -120,8 +120,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
                 newEnrollments.add(newEnrollment);
 
-
-
                 courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
                 rabbitMQNotificationProducer.notifyMessage(student.getId(),"Finished your enrollment to courses ");
 

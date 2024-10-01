@@ -5,18 +5,14 @@ import com.example.electivecourses.model.dto.StudentDTO;
 import com.example.electivecourses.model.entity.Enrollment;
 import com.example.electivecourses.model.entity.Student;
 import com.example.electivecourses.converter.EnrollmentConverter;
-import com.example.electivecourses.converter.StudentConverter;
 import com.example.electivecourses.repository.EnrollmentRepository;
 import com.example.electivecourses.repository.StudentRepository;
 import com.example.electivecourses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,22 +22,10 @@ public class StudentServiceImpl implements StudentService {
     private StudentRepository studentRepository;
     @Autowired
     private EnrollmentRepository enrollmentRepository;
-    @Autowired
-    @Qualifier("customTaskExecutor")
-    private Executor executor;
 
     @Override
     public List<StudentDTO> getAllStudents() {
-        List<Student> students  = studentRepository.findAll();
-
-        Queue<StudentDTO> dtoQueue = new ConcurrentLinkedQueue<>();
-
-        students.forEach(student -> executor.execute(() -> {
-            StudentDTO dto = StudentConverter.toDTO(student);
-            dtoQueue.add(dto);
-        }));
-
-        return new ArrayList<>(dtoQueue);
+        return studentRepository.findAllStudentsAsDTO();
     }
 
     @Override
