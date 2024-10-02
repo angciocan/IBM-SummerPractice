@@ -17,6 +17,12 @@ public class EnrollmentDTO {
         this.status=status;
     }
 
+    public EnrollmentDTO(Long id, Long studentId, Long courseId) {
+        this.id=id;
+        this.studentId = studentId;
+        this.courseId = courseId;
+    }
+
     public Long getCourseId() {
         return courseId;
     }

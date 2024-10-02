@@ -32,6 +32,12 @@ public class Enrollment {
         this.status = status;
     }
 
+    public Enrollment(Long id, Student student, Course course) {
+        this.id = id;
+        this.student = student;
+        this.course = course;
+    }
+
     public EnrollmentStatus getStatus() {
         return status;
     }

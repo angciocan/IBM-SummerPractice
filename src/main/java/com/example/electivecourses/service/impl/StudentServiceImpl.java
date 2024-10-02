@@ -33,29 +33,13 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ArrayList<EnrollmentDTO> getStudentEnrollmentDTOs(long studentId) {
-        List<Enrollment> studentEnrollments = getStudentById(studentId).getEnrollments();
-
-        return (ArrayList<EnrollmentDTO>) studentEnrollments.parallelStream()
-                .sorted(Comparator.comparing(Enrollment::getId))
-                .map(EnrollmentConverter::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public ArrayList<Enrollment> getStudentEnrollments(long studentId) {
-        List<Enrollment> studentEnrollments = getStudentById(studentId).getEnrollments();
-
-        return (ArrayList<Enrollment>) studentEnrollments.parallelStream()
-                .sorted(Comparator.comparing(Enrollment::getId))
-                .collect(Collectors.toList());
-
+        return studentRepository.findAllStudentsAsDTOByEnrollment(studentId);
     }
 
     @Transactional
     @Override
     public void updateStudentPreferenceList(Long studentId, Long courseId, int nrInList) {
-        List<Enrollment> enrollments = enrollmentRepository.findAll().stream()
-                .filter(enrollment -> Objects.equals(enrollment.getStudent().getId(), studentId))
-                .toList();
+        List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId);
 
         Enrollment enrollment1 = enrollments.stream()
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId))
