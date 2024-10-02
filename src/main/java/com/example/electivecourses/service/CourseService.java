@@ -11,8 +11,7 @@ public interface CourseService {
     List<CourseDTO> getCoursesByMaxStudents(int maxStudents);
     List<CourseDTO> getCoursesByCategory(String category);
     CourseDTO getCourseById(Long id);
-    List<CourseDTO> getCoursesByStudentIdApplications(Long studentId);
     CourseDTO updateCourse(Long id, Course courseToUpdate);
-    CourseDTO createCourse(Course courseToCreate);
+    void createCourse(Course courseToCreate);
     void deleteCourse(Long id);
 }

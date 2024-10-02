@@ -22,20 +22,14 @@ public class Enrollment {
     @Column
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
-
-    public Enrollment() {
-    }
-
     public Enrollment(Student student, Course course, EnrollmentStatus status) {
         this.student = student;
         this.course = course;
         this.status = status;
     }
 
-    public Enrollment(Long id, Student student, Course course) {
-        this.id = id;
-        this.student = student;
-        this.course = course;
+    public Enrollment() {
+
     }
 
     public EnrollmentStatus getStatus() {

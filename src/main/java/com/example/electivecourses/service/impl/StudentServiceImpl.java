@@ -4,7 +4,6 @@ import com.example.electivecourses.model.dto.EnrollmentDTO;
 import com.example.electivecourses.model.dto.StudentDTO;
 import com.example.electivecourses.model.entity.Enrollment;
 import com.example.electivecourses.model.entity.Student;
-import com.example.electivecourses.converter.EnrollmentConverter;
 import com.example.electivecourses.repository.EnrollmentRepository;
 import com.example.electivecourses.repository.StudentRepository;
 import com.example.electivecourses.service.StudentService;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {

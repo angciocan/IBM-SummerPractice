@@ -67,8 +67,6 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
 
         for (int i = 0; i < enrollments.size(); i++) {
 
-
-
             Enrollment enrollment = enrollments.get(i);
             if (i < availableEnrollments) {
 

@@ -81,6 +81,8 @@ INSERT INTO student(grade, study_year, faculty_section, name) VALUES (8, 3, 'CTI
 INSERT INTO student(grade, study_year, faculty_section, name) VALUES (7, 4, 'IS', 'Madalina Dumitru');
 INSERT INTO student(grade, study_year, faculty_section, name) VALUES (9, 2, 'CTI', 'Razvan Petcu');
 insert into teacher(name) values ('Nicolina');
+insert into teacher(name) values ('Marian Mihai');
+insert into teacher(name) values ('Vasile Ion');
 
 insert into administrator(name) values ('BOSS');
 

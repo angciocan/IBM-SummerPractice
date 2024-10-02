@@ -268,13 +268,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Deleting enrollment for student ID: " + studentId + "To course ID: " + courseId);
 
-        Optional<Enrollment> existentEnrollment = enrollmentRepository.findAll().stream()
-                .filter(enrollment -> Objects.equals(enrollment.getStudent().getId(), studentId))
-                .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId))
-                .findAny();
-
-        existentEnrollment.ifPresent(enrollment -> enrollmentRepository.delete(enrollment));
-
+        enrollmentRepository.deleteEnrollmentByStudentIdAndCourseId(
+                studentId, courseId
+        );
     }
 
     @Override

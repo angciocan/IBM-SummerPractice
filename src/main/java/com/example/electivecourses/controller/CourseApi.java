@@ -33,13 +33,9 @@ public class CourseApi {
     @GetMapping("/by-id")
     public CourseDTO getCourseById(@RequestParam Long id) {return courseService.getCourseById(id);}
 
-    @GetMapping("/applications/by-student-id")
-    public List<CourseDTO> getCoursesByStudentIdApplications(@RequestParam Long id) {
-        return courseService.getCoursesByStudentIdApplications(id);
-    }
     @PostMapping("/create")
-    public CourseDTO createCourse(@RequestBody Course course) {
-        return courseService.createCourse(course);
+    public void createCourse(@RequestBody Course course) {
+        courseService.createCourse(course);
     }
     @PostMapping("/update")
     public CourseDTO updateCourse(@RequestParam Long id, @RequestBody Course course) {

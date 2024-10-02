@@ -1,6 +1,6 @@
 package com.example.electivecourses.controller;
 
-import com.example.electivecourses.model.dto.TeacherProfileDTO;
+import com.example.electivecourses.model.dto.TeacherDTO;
 import com.example.electivecourses.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +23,8 @@ public class TeacherApi {
 
     @GetMapping("/")
     @ResponseBody
-    public List<TeacherProfileDTO> getAllTeachers() {
+    public List<TeacherDTO> getAllTeachers() {
         return  teacherService.getAllTeachers();
-    }
-
-    @PostMapping("/createCourse")
-    public CourseDTO createCourse(@RequestBody Course courseToCreate){
-        return courseService.createCourse(courseToCreate);
     }
 
     @PutMapping("/updateCourse")

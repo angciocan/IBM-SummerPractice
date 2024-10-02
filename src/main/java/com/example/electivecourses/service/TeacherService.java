@@ -1,11 +1,13 @@
 package com.example.electivecourses.service;
 
-import com.example.electivecourses.model.dto.TeacherProfileDTO;
+import com.example.electivecourses.model.dto.TeacherDTO;
 
 
 import java.util.List;
 
 
 public interface TeacherService {
-    List<TeacherProfileDTO> getAllTeachers();
+
+
+    List<TeacherDTO> getAllTeachers();
 }
