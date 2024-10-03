@@ -1,6 +1,6 @@
 package com.example.ElectivCourses.service.impl;
 
-import com.example.ElectivCourses.Model.entity.Administrator;
+import com.example.ElectivCourses.model.entity.Administrator;
 import com.example.ElectivCourses.repository.AdministratorRepository;
 import com.example.ElectivCourses.service.AdministratorService;
 import org.springframework.beans.factory.annotation.Autowired;

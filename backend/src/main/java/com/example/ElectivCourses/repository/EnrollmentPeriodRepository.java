@@ -1,6 +1,6 @@
 package com.example.ElectivCourses.repository;
 
-import com.example.ElectivCourses.Model.entity.EnrollmentPeriod;
+import com.example.ElectivCourses.model.entity.EnrollmentPeriod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

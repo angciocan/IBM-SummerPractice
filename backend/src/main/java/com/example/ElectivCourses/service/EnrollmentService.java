@@ -1,9 +1,8 @@
 package com.example.ElectivCourses.service;
 
-import com.example.ElectivCourses.Model.dto.CourseDTO;
-import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
-import com.example.ElectivCourses.Model.dto.StudentDTO;
-import com.example.ElectivCourses.Model.entity.Enrollment;
+import com.example.ElectivCourses.model.dto.CourseDTO;
+import com.example.ElectivCourses.model.dto.EnrollmentDTO;
+import com.example.ElectivCourses.model.dto.StudentDTO;
 
 import java.util.List;
 
@@ -14,7 +13,6 @@ public interface EnrollmentService {
     long getNrOfCurrentApplications(Long courseId);
     List<StudentDTO> getStudentsEnrolledToCourse(Long courseId);
     List<CourseDTO> getCoursesForStudent(Long studentId);
-    void fixEnrollments();
     void enrollStudentsToMandatoryCourses();
     boolean existsByCourseIdAndStudentId(Long courseId,Long studentId);
     List<StudentDTO> getStudentsPendingEnrollmentToCourse(Long courseId);

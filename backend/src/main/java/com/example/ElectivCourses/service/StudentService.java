@@ -1,8 +1,8 @@
 package com.example.ElectivCourses.service;
 
-import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
-import com.example.ElectivCourses.Model.dto.StudentDTO;
-import com.example.ElectivCourses.Model.entity.Student;
+import com.example.ElectivCourses.model.dto.EnrollmentDTO;
+import com.example.ElectivCourses.model.dto.StudentDTO;
+import com.example.ElectivCourses.model.entity.Student;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.example.ElectivCourses.controller;
 
-import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
-import com.example.ElectivCourses.Model.dto.StudentDTO;
+import com.example.ElectivCourses.model.dto.EnrollmentDTO;
+import com.example.ElectivCourses.model.dto.StudentDTO;
 import com.example.ElectivCourses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

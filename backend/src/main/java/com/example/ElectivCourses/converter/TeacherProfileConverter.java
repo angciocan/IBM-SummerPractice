@@ -1,9 +1,9 @@
 package com.example.ElectivCourses.converter;
 
-import com.example.ElectivCourses.Model.dto.CourseProfileDTO;
-import com.example.ElectivCourses.Model.dto.TeacherProfileDTO;
-import com.example.ElectivCourses.Model.entity.Course;
-import com.example.ElectivCourses.Model.entity.Teacher;
+import com.example.ElectivCourses.model.dto.CourseProfileDTO;
+import com.example.ElectivCourses.model.dto.TeacherProfileDTO;
+import com.example.ElectivCourses.model.entity.Course;
+import com.example.ElectivCourses.model.entity.Teacher;
 
 public class TeacherProfileConverter {
     public static TeacherProfileDTO toDTO(Teacher teacher) {

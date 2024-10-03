@@ -1,6 +1,6 @@
 package com.example.ElectivCourses.repository;
 
-import com.example.ElectivCourses.Model.entity.Course;
+import com.example.ElectivCourses.model.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

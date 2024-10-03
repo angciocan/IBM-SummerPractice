@@ -1,7 +1,7 @@
 package com.example.ElectivCourses.converter;
-import com.example.ElectivCourses.Model.dto.EnrollmentDTO;
-import com.example.ElectivCourses.Model.entity.Enrollment;
-import com.example.ElectivCourses.Model.entity.EnrollmentStatus;
+import com.example.ElectivCourses.model.dto.EnrollmentDTO;
+import com.example.ElectivCourses.model.entity.Enrollment;
+import com.example.ElectivCourses.model.entity.EnrollmentStatus;
 import com.example.ElectivCourses.repository.CourseRepository;
 import com.example.ElectivCourses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,11 +1,11 @@
 package com.example.ElectivCourses.controller;
 
-import com.example.ElectivCourses.Model.dto.TeacherProfileDTO;
+import com.example.ElectivCourses.model.dto.TeacherDTO;
 import com.example.ElectivCourses.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.example.ElectivCourses.Model.dto.CourseDTO;
-import com.example.ElectivCourses.Model.entity.Course;
+import com.example.ElectivCourses.model.dto.CourseDTO;
+import com.example.ElectivCourses.model.entity.Course;
 import com.example.ElectivCourses.service.CourseService;
 
 import java.util.List;
@@ -23,13 +23,8 @@ public class TeacherApi {
 
     @GetMapping("/")
     @ResponseBody
-    public List<TeacherProfileDTO> getAllTeachers() {
+    public List<TeacherDTO> getAllTeachers() {
         return  teacherService.getAllTeachers();
-    }
-
-    @PostMapping("/createCourse")
-    public CourseDTO createCourse(@RequestBody Course courseToCreate){
-        return courseService.createCourse(courseToCreate);
     }
 
     @PutMapping("/updateCourse")

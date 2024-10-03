@@ -1,13 +1,11 @@
 package com.example.ElectivCourses.controller;
 
 
-import com.example.ElectivCourses.Model.entity.EnrollmentAdministration;
+import com.example.ElectivCourses.model.entity.EnrollmentAdministration;
 import com.example.ElectivCourses.service.EnrollmentAdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,29 +25,9 @@ public class EnrollmentAdministrationApi {
         return enrollmentAdministrationService.nrOfMandatoryCoursesByYear(studyYear);
     }
 
-    @GetMapping("/nrOfElectiveCoursesByYear/{studyYear}")
-    public int nrOfElectiveCoursesByYear(@PathVariable("studyYear") int studyYear) {
+    @GetMapping("/nrOfElectivCoursesByYear/{studyYear}")
+    public int nrOfElectivCoursesByYear(@PathVariable("studyYear") int studyYear) {
         return enrollmentAdministrationService.nrOfElectiveCoursesByYear(studyYear);
     }
 
-
-    @PostMapping("/create/{studyYear}/{nrOfMandatoryCourses}/{nrOfElectiveCourses}")
-    EnrollmentAdministration createEnrollmentAdministration(@PathVariable("studyYear") int studyYear, @PathVariable("nrOfMandatoryCourses") int nrOfMandatoryCourses, @PathVariable("nrOfElectiveCourses") int nrOfElectiveCourses) {
-        return enrollmentAdministrationService.createEnrollmentAdministration(studyYear, nrOfMandatoryCourses, nrOfElectiveCourses);
-    }
-
-    @DeleteMapping("/delete/{studyYear}")
-    void deleteEnrollmentAdministration(@PathVariable("studyYear") int enrollmentAdministrationId) {
-        enrollmentAdministrationService.deleteEnrollmentAdministration(enrollmentAdministrationId);
-    }
-
-    @PostMapping("/setEnrollmentPeriod/{startTime}/{endTime}")
-    void setEnrollmentPeriod(@PathVariable("startTime")LocalDate startTime, @PathVariable("endTime") LocalDate endTime) {
-        enrollmentAdministrationService.setEnrollmentPeriod(startTime, endTime);
-    }
-
-    @GetMapping("/getEnrollmentPeriod")
-    ArrayList<LocalDate> getEnrollmentPeriod() {
-        return enrollmentAdministrationService.getEnrollmentPeriod();
-    }
 }

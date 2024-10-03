@@ -1,7 +1,7 @@
 package com.example.ElectivCourses.converter;
 
-import com.example.ElectivCourses.Model.dto.StudentDTO;
-import com.example.ElectivCourses.Model.entity.Student;
+import com.example.ElectivCourses.model.dto.StudentDTO;
+import com.example.ElectivCourses.model.entity.Student;
 
 public class StudentConverter {
     public static StudentDTO toDTO(Student student) {

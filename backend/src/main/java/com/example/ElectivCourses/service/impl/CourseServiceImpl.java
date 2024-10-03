@@ -1,8 +1,8 @@
 package com.example.ElectivCourses.service.impl;
 
-import com.example.ElectivCourses.Model.dto.CourseDTO;
-import com.example.ElectivCourses.Model.entity.Course;
-import com.example.ElectivCourses.Model.entity.Enrollment;
+import com.example.ElectivCourses.model.dto.CourseDTO;
+import com.example.ElectivCourses.model.entity.Course;
+import com.example.ElectivCourses.model.entity.Enrollment;
 import com.example.ElectivCourses.converter.CourseConverter;
 import com.example.ElectivCourses.converter.TeacherConverter;
 import com.example.ElectivCourses.repository.CourseRepository;
@@ -49,15 +49,8 @@ public class CourseServiceImpl implements CourseService {
     public CourseDTO getCourseById(Long id) { return CourseConverter.toDTO(courseRepository.getReferenceById(id)); }
 
     @Override
-    public List<CourseDTO> getCoursesByStudentIdApplications(Long studentId) {
-        return enrollmentRepository.findAll().stream()
-                .filter(enrollment -> enrollment.getStudent() == studentService.getStudentById(studentId))
-                .map(Enrollment::getCourse).map(CourseConverter::toDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public CourseDTO createCourse(Course courseToCreate){
-        return CourseConverter.toDTO(courseRepository.save(courseToCreate));
+    public void createCourse(Course courseToCreate){
+        courseRepository.save(courseToCreate);
     }
 
     @Override
