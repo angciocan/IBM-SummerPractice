@@ -3,7 +3,6 @@ package com.example.electivecourses.service.impl;
 import com.example.electivecourses.model.dto.CourseDTO;
 import com.example.electivecourses.model.dto.EnrollmentDTO;
 import com.example.electivecourses.model.dto.StudentDTO;
-import com.example.electivecourses.model.dto.TeacherDTO;
 import com.example.electivecourses.model.entity.Course;
 import com.example.electivecourses.model.entity.Enrollment;
 import com.example.electivecourses.model.entity.EnrollmentStatus;
@@ -297,8 +296,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public List<StudentDTO> getStudentsEnrolledToCourse(Long courseId) {
 
         rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Getting students enrolled to course:" + courseId );
-
-
         return enrollmentRepository.findAll().stream()
                 .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(), courseId)).filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.ENROLLED)
                 .map(enrollment -> StudentConverter.toDTO(enrollment.getStudent())).collect(Collectors.toList());
@@ -306,27 +303,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public List<CourseDTO> getCoursesForStudent(Long studentId) {
 
-        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Getting courses for student: " + studentId );
-
-
-        List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId);
-        return enrollments.stream()
-                .map(enrollment -> {
-                    TeacherDTO teacherDTO = new TeacherDTO(
-                            enrollment.getCourse().getTeacher().getId(),
-                            enrollment.getCourse().getTeacher().getName()
-                    );
-                    return new CourseDTO(
-                            enrollment.getCourse().getCourseName(),
-                            enrollment.getCourse().getMaxStudents(),
-                            enrollment.getCourse().getStudyYear(),
-                            enrollment.getCourse().getCategory(),
-                            enrollment.getCourse().getDayOfWeek(),
-                            enrollment.getCourse().getTime(),
-                            teacherDTO,
-                            enrollment.getCourse().getId()
-                    );
-                })
-                .collect(Collectors.toList());
+        rabbitTemplate.convertAndSend("enrollment-exchange", "enrollment-routing-key", "Getting courses for student: " + studentId);
+        return enrollmentRepository.getCoursesByStudentId(studentId);
     }
 }

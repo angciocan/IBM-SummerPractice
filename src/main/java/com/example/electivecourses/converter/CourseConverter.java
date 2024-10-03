@@ -1,7 +1,12 @@
 package com.example.electivecourses.converter;
 
 import com.example.electivecourses.model.dto.CourseDTO;
+import com.example.electivecourses.model.dto.TeacherDTO;
 import com.example.electivecourses.model.entity.Course;
+import com.example.electivecourses.model.projection.CourseProjection;
+
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 
 public class CourseConverter {
@@ -23,5 +28,6 @@ public class CourseConverter {
 
         return courseDTO;
     }
+
 
 }

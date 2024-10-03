@@ -20,7 +20,7 @@ public class CourseDTO {
 
     private TeacherDTO teacherDTO;
 
-    public CourseDTO(String courseName, int maxStudents, int studyYear, String category, DayOfWeek dayOfWeek, LocalTime time, TeacherDTO teacherDTO, Long id) {
+    public CourseDTO(Long id, String courseName, int maxStudents, int studyYear, String category, DayOfWeek dayOfWeek, LocalTime time, TeacherDTO teacherDTO) {
         this.courseName = courseName;
         this.maxStudents = maxStudents;
         this.studyYear = studyYear;
@@ -32,6 +32,9 @@ public class CourseDTO {
     }
 
     public CourseDTO() {
+    }
+    public CourseDTO(long id) {
+        this.id = id;
     }
 
     public Long getId() {
