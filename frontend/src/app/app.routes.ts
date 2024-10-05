@@ -7,7 +7,7 @@ export const routeConfig: Routes = [
   {
     path: '',
     component: UserComponent,
-    title: 'Home page'
+    title: 'User page'
   },
   {
     path: 'home',

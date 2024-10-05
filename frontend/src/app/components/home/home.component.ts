@@ -11,6 +11,7 @@ import { CourseService } from "../../services/course.service";
 import { EnrollmentService } from "../../services/enrollment.service";
 import {forkJoin, map, switchMap} from "rxjs";
 import {FormsModule} from "@angular/forms";
+import {AdministratorService} from "../../services/administrator.service";
 
 @Component({
   selector: 'app-home',
@@ -52,6 +53,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private selectedUserService: SelectedUserService,
     private studentService: StudentService,
+    private administratorService: AdministratorService,
     private cdr: ChangeDetectorRef,
     private courseService: CourseService,
     private enrollmentService: EnrollmentService
@@ -81,10 +83,8 @@ export class HomeComponent implements OnInit {
   }
 
 
-
-  // Method to create a new course
   onCreateCourse(): void {
-    this.courseService.createCourse(this.newCourse).subscribe(
+    this.administratorService.createCourse(this.newCourse).subscribe(
       createdCourse => {
         console.log('Course created successfully:', createdCourse);
         this.newCourse = {
@@ -104,18 +104,6 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  getAllCourses(): void {
-    this.courseService.getAllCourses().subscribe(
-      courses => {
-        this.allCourses = courses;
-        console.log('Courses retrieved successfully:', this.allCourses);
-      },
-      error => {
-        console.error('Error retrieving courses:', error);
-      }
-    );
-  }
-
   getStudentsEnrolledToCourse(courseId: number): void {
     this.enrollmentService.getStudentsEnrolledToCourse(courseId).subscribe(
       students => {
@@ -130,7 +118,7 @@ export class HomeComponent implements OnInit {
 
   onUpdateCourse(): void {
     if (this.selectedCourse && this.selectedCourse.id) {
-      this.courseService.updateCourse(this.selectedCourse.id, this.selectedCourse).subscribe(
+      this.administratorService.updateCourse(this.selectedCourse.id, this.selectedCourse).subscribe(
         updatedCourse => {
           console.log('Course updated successfully:', updatedCourse);
           this.selectedCourse = null;
@@ -164,7 +152,7 @@ export class HomeComponent implements OnInit {
 
   onDeleteCourse(): void {
     if (this.selectedCourse && this.selectedCourse.id) {
-      this.courseService.deleteCourse(this.selectedCourse.id).subscribe(
+      this.administratorService.deleteCourse(this.selectedCourse.id).subscribe(
         () => {
           console.log('Course deleted successfully');
           this.allCourses = this.allCourses.filter(course => course.id !== this.selectedCourse?.id);

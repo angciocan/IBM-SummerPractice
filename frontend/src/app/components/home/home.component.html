@@ -1,3 +1,8 @@
+
+<div *ngIf="!selectedUser">
+  <h3>Please select an user!</h3>
+</div>
+
 <div *ngIf="selectedUser">
   <h3>Currently Selected User</h3>
   <p>Name: {{ selectedUser.name | replaceNullWithText: "No student chosen" }}</p>

@@ -13,7 +13,7 @@ export class StudentService {
   constructor(private http: HttpClient) { }
 
   getAllStudents(): Observable<Student[]> {
-    return this.http.get<Student[]>(`${this.apiUrl}/getStudent`).pipe(
+    return this.http.get<Student[]>(`${this.apiUrl}/`).pipe(
       map(students => students.map(student => ({ ...student, role: 'student' })))
     );
   }
