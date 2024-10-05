@@ -13,4 +13,9 @@ public interface StudentService {
     ArrayList<EnrollmentDTO> getStudentEnrollmentDTOs(long studentId);
     void updateStudentPreferenceList(Long studentId, Long courseId, int nrInList);
 
+    void createStudent(Student studentToCreate);
+
+    void deleteStudent(Long id);
+
+    StudentDTO updateStudent(Long id, Student studentToUpdate);
 }

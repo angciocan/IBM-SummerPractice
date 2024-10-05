@@ -2,13 +2,10 @@ package com.example.ElectivCourses.service.impl;
 
 import com.example.ElectivCourses.model.dto.CourseDTO;
 import com.example.ElectivCourses.model.entity.Course;
-import com.example.ElectivCourses.model.entity.Enrollment;
 import com.example.ElectivCourses.converter.CourseConverter;
 import com.example.ElectivCourses.converter.TeacherConverter;
 import com.example.ElectivCourses.repository.CourseRepository;
-import com.example.ElectivCourses.repository.EnrollmentRepository;
 import com.example.ElectivCourses.service.CourseService;
-import com.example.ElectivCourses.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +16,6 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courseRepository;
-
-    @Autowired
-    private EnrollmentRepository enrollmentRepository;
-
-    @Autowired
-    private StudentService studentService;
 
     @Override
     public List<CourseDTO> getAllCourses() {

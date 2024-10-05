@@ -1,5 +1,6 @@
 package com.example.ElectivCourses.service.impl;
 
+import com.example.ElectivCourses.converter.StudentConverter;
 import com.example.ElectivCourses.model.dto.EnrollmentDTO;
 import com.example.ElectivCourses.model.dto.StudentDTO;
 import com.example.ElectivCourses.model.entity.Enrollment;
@@ -61,6 +62,27 @@ public class StudentServiceImpl implements StudentService {
 
         enrollmentRepository.saveAll(Arrays.asList(enrollment1, enrollment2));
     }
+
+    public void createStudent(Student student){
+        studentRepository.save(student);
+    }
+
+    public void deleteStudent(Long studentId){
+        studentRepository.deleteById(studentId);
+    }
+
+    public StudentDTO updateStudent(Long studentId, Student studentToUpdate){
+        return StudentConverter.toDTO(studentRepository.findById(studentId).map(student -> {
+
+            student.setName(studentToUpdate.getName());
+            student.setFacultySection(studentToUpdate.getFacultySection());
+            student.setStudyYear(studentToUpdate.getStudyYear());
+            student.setGrade(studentToUpdate.getGrade());
+            return studentRepository.save(student);
+
+        }).orElseThrow(() -> new RuntimeException("Student not found")));
+    }
+
 }
 
 
