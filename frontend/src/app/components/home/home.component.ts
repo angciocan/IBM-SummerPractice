@@ -145,7 +145,7 @@ export class HomeComponent implements OnInit {
   }
 
   getCourseById(courseId: any): void {
-    const id = Number(courseId); // Convert the string value to a number
+    const id = Number(courseId);
     if (!id) {
       console.error('Invalid course ID');
       return;

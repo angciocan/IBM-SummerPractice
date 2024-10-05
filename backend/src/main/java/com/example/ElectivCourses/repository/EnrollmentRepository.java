@@ -1,9 +1,7 @@
 package com.example.ElectivCourses.repository;
 
 import com.example.ElectivCourses.model.dto.CourseDTO;
-import com.example.ElectivCourses.model.entity.Course;
 import com.example.ElectivCourses.model.entity.Enrollment;
-import com.example.ElectivCourses.model.projection.CourseProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +15,7 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment,Long> {
     boolean existsByCourseIdAndStudentId(Long courseId, Long studentId);
 
 
-    @Query("SELECT new com.example.ElectivCourses.model.dto.CourseDTO(c.id)" +
+    @Query("SELECT new com.example.ElectivCourses.model.dto.CourseDTO(c.id,c.courseName,c.maxStudents,c.studyYear,c.category,c.dayOfWeek,c.time,c.teacher.id)" +
             " FROM Course c" +
             " JOIN Enrollment e ON c.id = e.course.id" +
             " JOIN Student s ON s.id = e.student.id  " +
