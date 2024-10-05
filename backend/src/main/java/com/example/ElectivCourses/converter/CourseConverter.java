@@ -1,12 +1,7 @@
 package com.example.ElectivCourses.converter;
 
 import com.example.ElectivCourses.model.dto.CourseDTO;
-import com.example.ElectivCourses.model.dto.TeacherDTO;
 import com.example.ElectivCourses.model.entity.Course;
-import com.example.ElectivCourses.model.projection.CourseProjection;
-
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 
 
 public class CourseConverter {
@@ -24,7 +19,7 @@ public class CourseConverter {
         courseDTO.setCategory(course.getCategory());
         courseDTO.setDayOfWeek(course.getDayOfWeek());
         courseDTO.setTime(course.getTime());
-        courseDTO.setTeacherDTO(TeacherConverter.toDTO(course.getTeacher()));
+        courseDTO.setTeacher_id(course.getId());
 
         return courseDTO;
     }

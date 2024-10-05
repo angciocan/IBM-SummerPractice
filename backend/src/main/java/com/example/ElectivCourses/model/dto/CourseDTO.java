@@ -18,16 +18,16 @@ public class CourseDTO {
 
     private LocalTime time;
 
-    private TeacherDTO teacherDTO;
+    private long teacher_id;
 
-    public CourseDTO(Long id, String courseName, int maxStudents, int studyYear, String category, DayOfWeek dayOfWeek, LocalTime time, TeacherDTO teacherDTO) {
+    public CourseDTO(Long id, String courseName, int maxStudents, int studyYear, String category, DayOfWeek dayOfWeek, LocalTime time, long teacher_id) {
         this.courseName = courseName;
         this.maxStudents = maxStudents;
         this.studyYear = studyYear;
         this.category = category;
         this.dayOfWeek = dayOfWeek;
         this.time = time;
-        this.teacherDTO = teacherDTO;
+        this.teacher_id = teacher_id;
         this.id = id;
     }
 
@@ -93,11 +93,11 @@ public class CourseDTO {
         this.time = time;
     }
 
-    public TeacherDTO getTeacherDTO() {
-        return teacherDTO;
+    public long getTeacher_id() {
+        return teacher_id;
     }
 
-    public void setTeacherDTO(TeacherDTO teacherDTO) {
-        this.teacherDTO = teacherDTO;
+    public void setTeacher_id(long teacher_id) {
+        this.teacher_id = teacher_id;
     }
 }
