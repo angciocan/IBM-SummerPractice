@@ -48,7 +48,18 @@ export class HomeComponent implements OnInit {
     time: '',
     teacherDTO: null
   };
+
+  newStudent: Student = {
+    id: 0,
+    name: '',
+    role: 'student',
+    grade: 0,
+    facultySection: '',
+    studyYear: 0
+  }
+
   protected selectedCourse: Course | null  = null;
+  protected selectedStudent: Student | null = null;
 
   constructor(
     private selectedUserService: SelectedUserService,
@@ -160,6 +171,41 @@ export class HomeComponent implements OnInit {
         },
         error => {
           console.error('Error deleting course:', error);
+        }
+      );
+    } else {
+      console.error('Selected course or course ID is missing');
+    }
+  }
+
+  onCreateStudent(): void {
+    this.administratorService.createStudent(this.newStudent).subscribe(
+      createdStudent => {
+        console.log('Student created successfully:', this.newStudent);
+        this.newStudent = {
+          id: 0,
+          name: '',
+          role: 'student',
+          grade: 0,
+          facultySection: '',
+          studyYear: 0
+        }
+      },
+      error => {
+        console.error('Error creating student:', error);
+      }
+    );
+  }
+
+  onUpdateStudent(): void {
+    if (this.selectedStudent && this.selectedStudent.id) {
+      this.administratorService.updateStudent(this.selectedStudent.id, this.selectedStudent).subscribe(
+        updatedCourse => {
+          console.log('Course updated successfully:', this.selectedCourse);
+          this.selectedCourse = null;
+        },
+        error => {
+          console.error('Error updating course:', error);
         }
       );
     } else {
