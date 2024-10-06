@@ -12,6 +12,7 @@ import { EnrollmentService } from "../../services/enrollment.service";
 import {forkJoin, map, switchMap} from "rxjs";
 import {FormsModule} from "@angular/forms";
 import {AdministratorService} from "../../services/administrator.service";
+import {TeacherService} from "../../services/teacher.service";
 
 @Component({
   selector: 'app-home',
@@ -23,8 +24,10 @@ import {AdministratorService} from "../../services/administrator.service";
 export class HomeComponent implements OnInit {
   selectedUser: User | null = null;
   students: Student[] = [];
+  allStudents: Student[] = [];
   filteredStudents: Student[] = [];
   studentsEnrolledToCoursesMap: { [courseId: number]: Student[] } = {};
+  allTeachers: Teacher[] = [];
   allCourses: Course[] = [];
   courses: Course[] = [];
   mandatoryCourses: Course[] = [];
@@ -65,6 +68,7 @@ export class HomeComponent implements OnInit {
     private selectedUserService: SelectedUserService,
     private studentService: StudentService,
     private administratorService: AdministratorService,
+    private teacherService: TeacherService,
     private cdr: ChangeDetectorRef,
     private courseService: CourseService,
     private enrollmentService: EnrollmentService
@@ -80,6 +84,12 @@ export class HomeComponent implements OnInit {
       });
       this.courseService.getAllCourses().subscribe(courses => {
         this.allCourses = courses;
+      })
+      this.studentService.getAllStudents().subscribe(students => {
+        this.allStudents = students;
+      })
+      this.teacherService.getAllTeachers().subscribe(teachers => {
+        this.allTeachers = teachers;
       })
 
       if (this.selectedUser && this.isStudent(this.selectedUser)) {
@@ -161,6 +171,24 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  getStudentById(studentId: any): void {
+    const id = Number(studentId);
+    if (!id) {
+      console.error('Invalid course ID');
+      return;
+    }
+
+    this.studentService.getStudentById(id).subscribe(
+      student => {
+        this.selectedStudent = student;
+        console.log('Student loaded:', this.selectedStudent);
+      },
+      error => {
+        console.error('Error fetching course:', error);
+      }
+    );
+  }
+
   onDeleteCourse(): void {
     if (this.selectedCourse && this.selectedCourse.id) {
       this.administratorService.deleteCourse(this.selectedCourse.id).subscribe(
@@ -210,6 +238,23 @@ export class HomeComponent implements OnInit {
       );
     } else {
       console.error('Selected course or course ID is missing');
+    }
+  }
+
+  onDeleteStudent(): void {
+    if (this.selectedStudent && this.selectedStudent.id) {
+      this.administratorService.deleteStudent(this.selectedStudent.id).subscribe(
+        () => {
+          console.log('Student deleted successfully');
+          this.allStudents = this.allStudents.filter(student => student.id !== this.selectedStudent?.id);
+          this.selectedStudent = null;
+        },
+        error => {
+          console.error('Error deleting student:', error);
+        }
+      );
+    } else {
+      console.error('Selected student or student ID is missing');
     }
   }
 

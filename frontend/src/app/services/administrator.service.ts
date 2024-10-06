@@ -45,8 +45,8 @@ export class AdministratorService {
   }
 
   deleteStudent(id: number): Observable<void> {
-    let params = new HttpParams().set('id',id.toString())
-    return this.http.post<void>(`${this.apiUrl}/deleteStudent`, {params} );
+    let params = new HttpParams().set('id', id.toString());
+    return this.http.delete<void>(`${this.apiUrl}/deleteStudent`, {params} );
   }
 
   createTeacher(teacher: Teacher): Observable<Teacher> {
