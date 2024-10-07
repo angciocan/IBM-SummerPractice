@@ -10,6 +10,8 @@ import {TeacherService} from "../../services/teacher.service";
 import {AdministratorService} from "../../services/administrator.service";
 import {Course} from "../../interfaces/course";
 import {EnrollmentService} from "../../services/enrollment.service";
+import {Enrollment} from "../../interfaces/enrollment";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-user',
@@ -22,8 +24,9 @@ export class UserComponent implements OnInit{
   students: Student[] = [];
   teachers: Teacher[] = [];
   admins: Admin[] = [];
-  courses: Course[] = [];
+  userCourses: Course[] = [];
   user: User | null = null;
+  enrollments: { [key: number]: Enrollment } = {};
 
   constructor(
     private studentService: StudentService,
@@ -35,6 +38,7 @@ export class UserComponent implements OnInit{
 
   ngOnInit(): void {
     this.loadUsers();
+
     this.user = this.selectedUserService.getSelectedUser()
     if (this.user) {
       this.loadUserCourses(this.user);
@@ -50,13 +54,15 @@ export class UserComponent implements OnInit{
 
   selectUser(user: User): void {
     this.selectedUserService.setSelectedUser(user);
+    this.user = user
     this.loadUserCourses(user);
-    console.log(user)
+    this.loadEnrollments();
+    // console.log(user)
   }
 
   clearSelectedUser(): void {
     this.selectedUserService.clearSelectedUser();
-    this.courses = [];
+    this.userCourses = [];
   }
 
   getSelectedUser(): User | null {
@@ -67,16 +73,35 @@ export class UserComponent implements OnInit{
     if (user.role === 'student') {
       this.loadCoursesForStudent(user.id);
     } else if (user.role === 'teacher') {
-      this.courses = (user as Teacher).courses;
-      console.log(this.courses)
+      this.userCourses = (user as Teacher).courses;
+      console.log(this.userCourses)
     }
   }
 
   private loadCoursesForStudent(studentId: number): void {
     this.enrollmentService.getCoursesForStudent(studentId).subscribe(courses => {
-      this.courses = courses;
-      console.log(this.courses)
+      this.userCourses = courses;
+      console.log(this.userCourses)
     });
+  }
+
+  private loadEnrollments(): void {
+      this.userCourses.forEach(course => {
+        if(this.user) {
+          console.log(this.user.id)
+          let id = 0
+          this.getEnrollment(this.user.id, course.id).subscribe(enrollment => {
+            console.log(enrollment)
+            this.enrollments[id] = enrollment;
+            id++
+          });
+        }
+      });
+    console.log(this.enrollments)
+  }
+
+  getEnrollment(studentId:number, courseId: number): Observable<Enrollment>{
+    return this.enrollmentService.getEnrollment(studentId,courseId)
   }
 
 }

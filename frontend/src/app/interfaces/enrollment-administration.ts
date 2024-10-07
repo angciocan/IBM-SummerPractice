@@ -3,6 +3,4 @@ export interface EnrollmentAdministration {
   "studyYear": number,
   "nrOfMandatoryCourses": number,
   "nrOfElectiveCourses": number,
-  startTime:Date,
-  endTime:Date
 }

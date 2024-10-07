@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {Student} from "../interfaces/student";
 import {HttpClient} from "@angular/common/http";
 import {Course} from "../interfaces/course";
+import {Enrollment} from "../interfaces/enrollment";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class EnrollmentService {
   }
   getStudentPendingEnrollmentToCourse(courseId:number): Observable<Student[]>{
     return this.http.get<Student[]>(`${this.apiUrl}/students-pending-enrollment-to-course/${courseId}`)
+  }
+
+  getEnrollment(studentId:number, courseId:number): Observable<Enrollment>{
+    return this.http.get<Enrollment>(`${this.apiUrl}/get-enrollment/${studentId}/${courseId}`)
   }
 
   createEnrollment(studentId: number, courseId: number): Observable<void> {

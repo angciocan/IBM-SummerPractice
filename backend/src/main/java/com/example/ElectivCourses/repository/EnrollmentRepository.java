@@ -1,7 +1,10 @@
 package com.example.ElectivCourses.repository;
 
 import com.example.ElectivCourses.model.dto.CourseDTO;
+import com.example.ElectivCourses.model.dto.EnrollmentDTO;
+import com.example.ElectivCourses.model.entity.Course;
 import com.example.ElectivCourses.model.entity.Enrollment;
+import com.example.ElectivCourses.model.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,7 +27,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment,Long> {
 
     @Query("DELETE FROM Enrollment e WHERE e.student.id = :studentId AND e.course.id = :courseId")
     void deleteEnrollmentByStudentIdAndCourseId(@Param("studentId") long studentId, @Param("courseId") long courseId);
-
 
 
 }
