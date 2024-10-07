@@ -11,7 +11,7 @@ import {AdministratorService} from "../../services/administrator.service";
 import {Course} from "../../interfaces/course";
 import {EnrollmentService} from "../../services/enrollment.service";
 import {Enrollment} from "../../interfaces/enrollment";
-import {Observable} from "rxjs";
+import {forkJoin, map, Observable} from "rxjs";
 
 @Component({
   selector: 'app-user',
@@ -53,11 +53,11 @@ export class UserComponent implements OnInit{
   }
 
   selectUser(user: User): void {
-    this.selectedUserService.setSelectedUser(user);
     this.user = user
-    this.loadUserCourses(user);
+    this.loadUserCourses(this.user);
     this.loadEnrollments();
-    // console.log(user)
+    this.selectedUserService.setSelectedUser(this.user);
+
   }
 
   clearSelectedUser(): void {
@@ -74,7 +74,6 @@ export class UserComponent implements OnInit{
       this.loadCoursesForStudent(user.id);
     } else if (user.role === 'teacher') {
       this.userCourses = (user as Teacher).courses;
-      console.log(this.userCourses)
     }
   }
 
@@ -86,18 +85,18 @@ export class UserComponent implements OnInit{
   }
 
   private loadEnrollments(): void {
-      this.userCourses.forEach(course => {
-        if(this.user) {
-          console.log(this.user.id)
-          let id = 0
-          this.getEnrollment(this.user.id, course.id).subscribe(enrollment => {
-            console.log(enrollment)
-            this.enrollments[id] = enrollment;
-            id++
-          });
-        }
+      const enrollmentObservables = this.userCourses.map(course =>
+        this.getEnrollment(this.user!.id, course.id).pipe(
+          map(enrollment => ({ courseId: course.id, enrollment }))
+        )
+      );
+
+      forkJoin(enrollmentObservables).subscribe((courseEnrollments) => {
+        courseEnrollments.forEach(({ courseId, enrollment }) => {
+          this.enrollments[courseId] = enrollment;
+        });
+        console.log(this.enrollments);
       });
-    console.log(this.enrollments)
   }
 
   getEnrollment(studentId:number, courseId: number): Observable<Enrollment>{
