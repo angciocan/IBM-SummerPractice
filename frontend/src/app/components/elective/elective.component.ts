@@ -10,6 +10,8 @@ import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk
 import { CourseService } from '../../services/course.service';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { EnrollmentService } from '../../services/enrollment.service';
+import {EnrollmentManagementService} from "../../services/enrollment-management.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-elective',
@@ -37,6 +39,7 @@ export class ElectiveComponent implements OnInit {
     private selectedUserService: SelectedUserService,
     private courseService: CourseService,
     private enrollmentService: EnrollmentService,
+    private enrollmentManagementService: EnrollmentManagementService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -131,6 +134,23 @@ export class ElectiveComponent implements OnInit {
       console.warn('No student selected or the selected user is not a student');
     }
   }
+
+  processPendingEnrollment(): void {
+    this.enrollmentManagementService.processPendingEnrollments().subscribe({
+      next: (response) => {
+        console.log('Enrollments_processed_successfully', response);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error processing enrollments:', err);
+        if (err.error instanceof ErrorEvent) {
+          console.error('Client-side error:', err.error.message);
+        } else {
+          console.error(`Server-side error. Status: ${err.status}, Body: `, err.error);
+        }
+      },
+    });
+  }
+
 
   drop(event: CdkDragDrop<Course[]>): void {
     moveItemInArray(this.electiveCourses, event.previousIndex, event.currentIndex);

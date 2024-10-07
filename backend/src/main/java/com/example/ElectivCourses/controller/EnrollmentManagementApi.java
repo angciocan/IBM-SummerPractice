@@ -2,6 +2,7 @@ package com.example.ElectivCourses.controller;
 
 import com.example.ElectivCourses.service.EnrollmentManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,8 @@ public class EnrollmentManagementApi {
     @Autowired
     private EnrollmentManagementService enrollmentManagementService;
 
-    @PostMapping("process-pending-enrollment")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/process-pending-enrollment")
     public ResponseEntity<String> processPendingEnrollments() {
         try {
             enrollmentManagementService.processPendingEnrollments();
