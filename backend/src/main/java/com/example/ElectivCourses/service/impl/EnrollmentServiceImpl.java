@@ -261,6 +261,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         return enrollmentRepository.findAll().stream().map(EnrollmentConverter::toDTO).collect(Collectors.toList());
     }
+    @Override
+    public List<EnrollmentDTO> getAllPendingEnrollments() {
+        rabbitTemplate.convertAndSend("enrollment-exchange","enrollment-routing-key", "Fetched all the enrollments");
+
+        return enrollmentRepository.findAll().stream()
+                .filter(enrollment -> enrollment.getStatus() == EnrollmentStatus.PENDING)
+                .map(EnrollmentConverter::toDTO)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void deleteEnrollment(Long studentId, Long courseId) {
@@ -306,13 +315,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         rabbitTemplate.convertAndSend("enrollment-exchange", "enrollment-routing-key", "Getting courses for student: " + studentId);
         return enrollmentRepository.getCoursesByStudentId(studentId);
     }
-//    @Override
-//    public CourseDTO getCourseByStudentAndCourse(Long studentId, Long courseId){
-//        return enrollmentRepository.findAll().stream()
-//                .filter(enrollment -> Objects.equals(enrollment.getCourse().getId(),courseId)
-//                        && Objects.equals(enrollment.getStudent().getId(),studentId))
-//                .map(enrollment -> CourseConverter.toDTO(enrollment.getCourse())).findFirst().orElse(null);
-//    }
     public EnrollmentDTO getEnrollmentByStudentAndCourseId(Long studentId, Long courseId){
         return enrollmentRepository.findAll().stream()
                 .filter(enrollment -> enrollment.getStudent().getId().equals(studentId)

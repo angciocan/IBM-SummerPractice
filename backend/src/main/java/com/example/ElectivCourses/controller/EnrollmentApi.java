@@ -23,6 +23,11 @@ public class EnrollmentApi {
         List<EnrollmentDTO> enrollments = enrollmentService.getAllEnrollments();
         return new ResponseEntity<>(enrollments, HttpStatus.OK);
     }
+    @GetMapping("/pendingEnrollments")
+    public ResponseEntity<List<EnrollmentDTO>> getAllPendingEnrollments() {
+        List<EnrollmentDTO> enrollments = enrollmentService.getAllPendingEnrollments();
+        return new ResponseEntity<>(enrollments, HttpStatus.OK);
+    }
 
     @PostMapping("/create")
     public ResponseEntity<EnrollmentDTO> createEnrollment(@RequestBody EnrollmentDTO enrollmentDTO) {

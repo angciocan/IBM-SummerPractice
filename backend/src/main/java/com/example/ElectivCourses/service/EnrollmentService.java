@@ -9,6 +9,7 @@ import java.util.List;
 public interface EnrollmentService {
     EnrollmentDTO createEnrollment(EnrollmentDTO enrollmentDTO);
     List<EnrollmentDTO> getAllEnrollments();
+    List<EnrollmentDTO> getAllPendingEnrollments();
     void deleteEnrollment(Long studentId, Long courseId);
     long getNrOfCurrentApplications(Long courseId);
     List<StudentDTO> getStudentsEnrolledToCourse(Long courseId);
@@ -17,4 +18,5 @@ public interface EnrollmentService {
     boolean existsByCourseIdAndStudentId(Long courseId,Long studentId);
     List<StudentDTO> getStudentsPendingEnrollmentToCourse(Long courseId);
     EnrollmentDTO getEnrollmentByStudentAndCourseId(Long studentId, Long courseId);
+
 }

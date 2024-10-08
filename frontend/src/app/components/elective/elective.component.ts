@@ -5,13 +5,14 @@ import { Course } from '../../interfaces/course';
 import { SelectedUserService } from '../../services/selected-user.service';
 import { Student } from '../../interfaces/student';
 import { User } from '../../interfaces/user';
-import { forkJoin, map } from 'rxjs';
+import {forkJoin, map, Observable} from 'rxjs';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { CourseService } from '../../services/course.service';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { EnrollmentService } from '../../services/enrollment.service';
 import {EnrollmentManagementService} from "../../services/enrollment-management.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import { Enrollment } from '../../interfaces/enrollment';
 
 @Component({
   selector: 'app-elective',
@@ -33,6 +34,7 @@ export class ElectiveComponent implements OnInit {
   private courses: Course[] = [];
   courseApplicationCounts: { [courseId: number]: number } = {};
   studentsEnrolled: { [courseId: number]: Student[] } = {};
+  listOfPendingEnrollments: Enrollment[] = [];
 
   constructor(
     private enrollmentAdministrationService: EnrollmentAdministrationService,
@@ -52,6 +54,8 @@ export class ElectiveComponent implements OnInit {
         console.error('Error fetching enrollments:', err);
       },
     });
+
+    this.getListOfPendingEnrollments();
 
     this.selectedUserService.selectedUser$.subscribe((user) => {
       this.selectedUser = user;
@@ -138,7 +142,7 @@ export class ElectiveComponent implements OnInit {
   processPendingEnrollment(): void {
     this.enrollmentManagementService.processPendingEnrollments().subscribe({
       next: (response) => {
-        console.log('Enrollments_processed_successfully', response);
+        console.log('Enrollments processed successfully', response);
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error processing enrollments:', err);
@@ -151,6 +155,16 @@ export class ElectiveComponent implements OnInit {
     });
   }
 
+  getListOfPendingEnrollments(): void {
+    this.enrollmentService.getPendingEnrollments().subscribe(
+      (enrollments: Enrollment[]) => {
+        this.listOfPendingEnrollments = enrollments;
+      },
+      (error) => {
+        console.error('Error fetching pending enrollments', error);
+      }
+    );
+  }
 
   drop(event: CdkDragDrop<Course[]>): void {
     moveItemInArray(this.electiveCourses, event.previousIndex, event.currentIndex);

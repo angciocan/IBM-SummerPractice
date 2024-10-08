@@ -22,6 +22,31 @@
   Enroll in The Courses
 </button>
 
-<button (click)="processPendingEnrollment()">
-  Process pending enrollments
-</button>
+
+<div *ngIf="selectedUser">
+
+
+
+  <div *ngIf="selectedUser.role == 'admin' ">
+    <div *ngIf="listOfPendingEnrollments.length > 0; else noPendingEnrollments">
+      <ul>
+        <li *ngFor="let enrollment of listOfPendingEnrollments">
+          Enrollment Id: {{ enrollment.id }} - Student Id: {{enrollment.studentId}} - Course Id: {{enrollment.courseId}} with status: {{ enrollment.status }}
+        </li>
+      </ul>
+    </div>
+
+    <ng-template #noPendingEnrollments>
+      <p>No pending enrollments found.</p>
+    </ng-template>
+
+
+    <button (click)="processPendingEnrollment()">
+      Process pending enrollments
+    </button>
+
+  </div>
+
+
+
+</div>
