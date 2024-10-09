@@ -63,6 +63,10 @@ public class StudentServiceImpl implements StudentService {
         enrollmentRepository.saveAll(Arrays.asList(enrollment1, enrollment2));
     }
 
+    public List<Enrollment> getElectiveCourses(long studentId) {
+        return enrollmentRepository.findByStudentId(studentId);
+    }
+
     public void createStudent(Student student){
         studentRepository.save(student);
     }

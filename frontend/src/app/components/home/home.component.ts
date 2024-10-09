@@ -258,7 +258,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-
   onYearFilter(event: any): void {
     const value = event.target.value;
     this.selectedYear = value ? parseInt(value, 10) : null;

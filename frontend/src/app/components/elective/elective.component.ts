@@ -129,7 +129,7 @@ export class ElectiveComponent implements OnInit {
         return;
       }
 
-      for (let i = 0; i < studyYear; i++) {
+      for (let i = 0; i < eligibleCourses.length; i++) {
         this.createEnrollment(studentId, eligibleCourses[i].id);
       }
 

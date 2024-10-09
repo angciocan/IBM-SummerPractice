@@ -237,17 +237,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             return EnrollmentConverter.toDTO(alreadyExists.get());
         }
 
-        Course course = courseRepository.findById(newEnrollment.getCourse().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
-
-        if (course.getMaxStudents() <= 0) {
-            throw new IllegalArgumentException("No more spaces available in the course.");
-        }
-
-        course.setMaxStudents(course.getMaxStudents() - 1);
-
-        courseRepository.save(course);
-
         newEnrollment = enrollmentRepository.save(newEnrollment);
 
         rabbitMQNotificationProducer.notifyMessage(enrollmentDTO.getStudentId(),"Sending notification: asdasdas ");
@@ -322,5 +311,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .map(EnrollmentConverter::toDTO)
                 .findFirst()
                 .orElse(null); //
+    }
+    @Override
+    public int getElectiveCoursesCountByStudentId(Long studentId){
+        return enrollmentRepository.getElectiveCoursesCountByStudentId(studentId);
     }
 }

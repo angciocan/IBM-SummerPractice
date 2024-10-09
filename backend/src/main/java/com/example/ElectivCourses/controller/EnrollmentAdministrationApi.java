@@ -25,8 +25,8 @@ public class EnrollmentAdministrationApi {
         return enrollmentAdministrationService.nrOfMandatoryCoursesByYear(studyYear);
     }
 
-    @GetMapping("/nrOfElectivCoursesByYear/{studyYear}")
-    public int nrOfElectivCoursesByYear(@PathVariable("studyYear") int studyYear) {
+    @GetMapping("/nrOfElectiveCoursesByYear/{studyYear}")
+    public int nrOfElectiveCoursesByYear(@PathVariable("studyYear") int studyYear) {
         return enrollmentAdministrationService.nrOfElectiveCoursesByYear(studyYear);
     }
 

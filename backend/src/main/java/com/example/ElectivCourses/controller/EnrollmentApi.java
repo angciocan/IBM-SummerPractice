@@ -64,6 +64,10 @@ public class EnrollmentApi {
     public ResponseEntity<EnrollmentDTO> getEnrollmentByStudentAndCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentByStudentAndCourseId(studentId,courseId));
     }
+    @GetMapping("/get-elective-course-count-by-student-id/{studentId}")
+    public int getElectiveCourseCountByStudentId(@PathVariable Long studentId) {
+        return enrollmentService.getElectiveCoursesCountByStudentId(studentId);
+    }
 
 
 }

@@ -18,5 +18,6 @@ public interface EnrollmentService {
     boolean existsByCourseIdAndStudentId(Long courseId,Long studentId);
     List<StudentDTO> getStudentsPendingEnrollmentToCourse(Long courseId);
     EnrollmentDTO getEnrollmentByStudentAndCourseId(Long studentId, Long courseId);
+    int getElectiveCoursesCountByStudentId(Long studentId);
 
 }
