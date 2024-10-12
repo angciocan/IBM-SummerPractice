@@ -24,7 +24,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDTO> getAllStudents() {
-        return studentRepository.findAllStudentsAsDTO();
+        return studentRepository.getAllStudents();
     }
 
     @Override

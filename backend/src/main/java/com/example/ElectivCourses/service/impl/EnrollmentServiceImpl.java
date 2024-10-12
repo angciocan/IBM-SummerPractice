@@ -53,10 +53,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private RabbitMQNotificationProducer rabbitMQNotificationProducer;
 
 
-    public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
-        return enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId);
-    }
-
     public void enrollStudentsToMandatoryCourses() {
         System.out.println("Running enrollStudents to automatically enroll students in mandatory courses...");
 
@@ -86,7 +82,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         enrollmentRepository.saveAll(newEnrollments);
     }
-
 
     private void processStudentEnrollment(Student student, List<Enrollment> newEnrollments, Map<Long, Integer> courseSeatsToDecrement) {
 
@@ -124,82 +119,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
             }
 
-
         }
 
-
-    }
-
-    private void adjustCourseSeats(Long courseId, int seatsToDecrement) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + courseId));
-
-        if (course.getMaxStudents() < seatsToDecrement) {
-            throw new IllegalStateException("Course with ID: " + course.getId() + " does not have enough seats available.");
-        }
-
-        course.setMaxStudents(course.getMaxStudents() - seatsToDecrement);
-        courseRepository.save(course);
-    }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void fixEnrollments() {
-        List<Enrollment> enrollments = enrollmentRepository.findAll();
-        Map<Long, Integer> courseSeatsToDecrement = new ConcurrentHashMap<>();
-
-        CountDownLatch latch = new CountDownLatch(enrollments.size());
-
-        for (Enrollment enrollment : enrollments) {
-            executor.execute(() -> {
-                try {
-                    processEnrollment(enrollment, courseSeatsToDecrement);
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Fixing enrollments was interrupted", e);
-        }
-
-        courseSeatsToDecrement.forEach(this::adjustCourseSeats);
-
-        enrollStudentsToMandatoryCourses();
-
-        enrollmentRepository.saveAll(enrollments);
-    }
-
-    private void processEnrollment(Enrollment enrollment, Map<Long, Integer> courseSeatsToDecrement) {
-        Course course = enrollment.getCourse();
-        Student student = enrollment.getStudent();
-
-        if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
-
-
-            enrollment.setStatus(EnrollmentStatus.ENROLLED);
-            courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
-        }
-
-        if (student.getStudyYear() != course.getStudyYear()) {
-            throw new IllegalStateException("Study year mismatch for student ID: " + student.getId() + " and course ID: " + course.getId());
-        }
-
-        int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(student.getStudyYear());
-        long currentMandatoryCourses = enrollmentRepository.findAll().stream()
-                .filter(e -> e.getStudent().getId().equals(student.getId()) && e.getCourse().getCategory().equals("mandatory"))
-                .count();
-
-        if (currentMandatoryCourses > maxMandatoryCourses) {
-            throw new IllegalStateException("Student has exceeded the max number of mandatory courses for their study year: " + student.getId());
-        }
     }
 
     @Override
     public EnrollmentDTO createEnrollment(EnrollmentDTO enrollmentDTO) {
+
         Enrollment newEnrollment = enrollmentConverter.toEntity(enrollmentDTO);
         newEnrollment.setStatus(EnrollmentStatus.PENDING);
 
@@ -243,6 +169,80 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         return EnrollmentConverter.toDTO(newEnrollment);
     }
+
+    public boolean existsByCourseIdAndStudentId(Long courseId, Long studentId) {
+        return enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId);
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void fixEnrollments() {
+        List<Enrollment> enrollments = enrollmentRepository.findAll();
+        Map<Long, Integer> courseSeatsToDecrement = new ConcurrentHashMap<>();
+
+        CountDownLatch latch = new CountDownLatch(enrollments.size());
+
+        for (Enrollment enrollment : enrollments) {
+            executor.execute(() -> {
+                try {
+                    fixEnrollment(enrollment, courseSeatsToDecrement);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Fixing enrollments was interrupted", e);
+        }
+
+        courseSeatsToDecrement.forEach(this::adjustCourseSeats);
+
+        enrollStudentsToMandatoryCourses();
+
+        enrollmentRepository.saveAll(enrollments);
+    }
+
+    private void fixEnrollment(Enrollment enrollment, Map<Long, Integer> courseSeatsToDecrement) {
+        Course course = enrollment.getCourse();
+        Student student = enrollment.getStudent();
+
+        if (course.getCategory().equals("mandatory") && !enrollment.getStatus().equals(EnrollmentStatus.ENROLLED)) {
+
+
+            enrollment.setStatus(EnrollmentStatus.ENROLLED);
+            courseSeatsToDecrement.merge(course.getId(), 1, Integer::sum);
+        }
+
+        if (student.getStudyYear() != course.getStudyYear()) {
+            throw new IllegalStateException("Study year mismatch for student ID: " + student.getId() + " and course ID: " + course.getId());
+        }
+
+        int maxMandatoryCourses = enrollmentAdministrationService.nrOfMandatoryCoursesByYear(student.getStudyYear());
+        long currentMandatoryCourses = enrollmentRepository.findAll().stream()
+                .filter(e -> e.getStudent().getId().equals(student.getId()) && e.getCourse().getCategory().equals("mandatory"))
+                .count();
+
+        if (currentMandatoryCourses > maxMandatoryCourses) {
+            throw new IllegalStateException("Student has exceeded the max number of mandatory courses for their study year: " + student.getId());
+        }
+    }
+
+    private void adjustCourseSeats(Long courseId, int seatsToDecrement) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalStateException("Course not found with ID: " + courseId));
+
+        if (course.getMaxStudents() < seatsToDecrement) {
+            throw new IllegalStateException("Course with ID: " + course.getId() + " does not have enough seats available.");
+        }
+
+        course.setMaxStudents(course.getMaxStudents() - seatsToDecrement);
+        courseRepository.save(course);
+    }
+
+
 
     @Override
     public List<EnrollmentDTO> getAllEnrollments() {
@@ -304,13 +304,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         rabbitTemplate.convertAndSend("enrollment-exchange", "enrollment-routing-key", "Getting courses for student: " + studentId);
         return enrollmentRepository.getCoursesByStudentId(studentId);
     }
+    @Override
     public EnrollmentDTO getEnrollmentByStudentAndCourseId(Long studentId, Long courseId){
-        return enrollmentRepository.findAll().stream()
-                .filter(enrollment -> enrollment.getStudent().getId().equals(studentId)
-                        && enrollment.getCourse().getId().equals(courseId))
-                .map(EnrollmentConverter::toDTO)
-                .findFirst()
-                .orElse(null); //
+        return enrollmentRepository.getEnrollmentByStudentAndCourseId(studentId,courseId);
     }
     @Override
     public int getElectiveCoursesCountByStudentId(Long studentId){

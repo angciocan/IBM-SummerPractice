@@ -35,5 +35,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment,Long> {
     @Query("DELETE FROM Enrollment e WHERE e.student.id = :studentId AND e.course.id = :courseId")
     void deleteEnrollmentByStudentIdAndCourseId(@Param("studentId") long studentId, @Param("courseId") long courseId);
 
+    @Query("SELECT new com.example.ElectivCourses.model.dto.EnrollmentDTO(e.id,e.student.id,e.course.id) FROM Enrollment e WHERE e.student.id = :studentId and e.course.id = :courseId")
+    EnrollmentDTO getEnrollmentByStudentAndCourseId(@Param("studentId") long studentId, @Param("courseId") long courseId);
+
 
 }

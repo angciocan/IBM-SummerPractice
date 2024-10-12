@@ -87,11 +87,11 @@ public class EnrollmentManagementServiceImpl implements EnrollmentManagementServ
 
                 course.setMaxStudents(course.getMaxStudents() - 1);
 
-//                rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Enrolled student with Id: " + enrollment.getStudent() + "to course with Id:" + enrollment.getCourse());
+                rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Enrolled student with Id: " + enrollment.getStudent() + "to course with Id:" + enrollment.getCourse());
             } else {
                 enrollment.setStatus(EnrollmentStatus.CLOSED);
 
-//                rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Rejected student with Id: " + enrollment.getStudent() + "to course with Id:" + enrollment.getCourse());
+                rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Rejected student with Id: " + enrollment.getStudent() + "to course with Id:" + enrollment.getCourse());
 
             }
             enrollmentRepository.save(enrollment);

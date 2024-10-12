@@ -29,7 +29,7 @@ public class EnrollmentAdministrationServiceImpl implements EnrollmentAdministra
         if(defaults != null){
             return defaults.nrOfMandatoryCourses();
         }
-        else throw new NoSuchElementException("No enrollment course found for study year " + studyYear);
+        else throw new NoSuchElementException("No mandatory course found for study year " + studyYear);
 
     }
 
@@ -39,7 +39,7 @@ public class EnrollmentAdministrationServiceImpl implements EnrollmentAdministra
         if(defaults != null){
             return defaults.nrOfElectiveCourses();
         }
-        else throw new NoSuchElementException("No enrollment course found for study year " + studyYear);
+        else throw new NoSuchElementException("No elective course found for study year " + studyYear);
 
     }
 

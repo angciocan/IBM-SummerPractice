@@ -19,13 +19,11 @@ public class EnrollmentPeriodServiceImpl implements EnrollmentPeriodService {
     @Override
     public void openEnrollmentPeriod() {
 
-
         rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Opened the enrollment period");
 
         EnrollmentPeriod period = enrollmentPeriodRepository.findOrCreateSingleton();
         period.setOpen(true);
         enrollmentPeriodRepository.save(period);
-
 
     }
 
@@ -33,7 +31,6 @@ public class EnrollmentPeriodServiceImpl implements EnrollmentPeriodService {
     public void closeEnrollmentPeriod() {
 
         rabbitTemplate.convertAndSend("enrollment_exchange","enrollment-routing-key","Closed the enrollment period");
-
 
         EnrollmentPeriod period = enrollmentPeriodRepository.findOrCreateSingleton();
         period.setOpen(false);

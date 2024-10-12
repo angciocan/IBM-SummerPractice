@@ -10,12 +10,8 @@ import java.util.List;
 
 public interface TeacherService {
 
-
     List<TeacherDTO> getAllTeachers();
-
     void createTeacher(Teacher teacher);
-
     void deleteTeacher(Long teacher_id);
-
     TeacherDTO updateTeacher(Long teacherId, Teacher teacherToUpdate);
 }

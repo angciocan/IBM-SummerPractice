@@ -27,13 +27,4 @@ public class TeacherApi {
         return  teacherService.getAllTeachers();
     }
 
-    @PutMapping("/updateCourse")
-    public CourseDTO updateCourse(@RequestParam Long id, @RequestBody Course courseToUpdate){
-        return courseService.updateCourse(id, courseToUpdate);
-    }
-
-    @DeleteMapping("/deleteCourse")
-    public void deleteCourse(@RequestParam Long id){
-        courseService.deleteCourse(id);
-    }
 }

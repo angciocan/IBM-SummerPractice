@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT new com.example.ElectivCourses.model.dto.StudentDTO(s.id,s.name,s.facultySection,s.grade,s.studyYear) FROM Student s")
-    List<StudentDTO> findAllStudentsAsDTO();
+    List<StudentDTO> getAllStudents();
 
     @Query("SELECT new com.example.ElectivCourses.model.dto.EnrollmentDTO(e.id,e.student.id,e.course.id,e.status)" +
             " FROM Enrollment e" +
